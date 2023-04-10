@@ -49,4 +49,14 @@ router.put("/:id/like",mwuser.isValidToken,mwtweet.addLikeRestriction, async (re
   }
 });
 
+router.put("/:id/retweet",mwuser.isValidToken,mwtweet.addRetweetRestriction, async (req, res, next) => {
+    try {
+      const tweet = await Tweet.getBy({ tweet_id: req.params.id });
+      const likedTweet = await Tweet.addRetweet(tweet, req.params.id);
+      res.status(200).json(likedTweet);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 module.exports = router;

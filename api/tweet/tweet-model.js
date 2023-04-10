@@ -40,11 +40,21 @@ const change = async (updateTweet, id) => {
   return updatedTweet;
 };
 
-const addLike = async (tweetObj,id) => {
-    await db("tweets").where("tweet_id", id).update({tweet:tweetObj.tweet,like:tweetObj.like+1});
-    const updatedTweet = await getBy({ tweet_id: id });
-    return updatedTweet;
-  };
+const addLike = async (tweetObj, id) => {
+  await db("tweets")
+    .where("tweet_id", id)
+    .update({ tweet: tweetObj.tweet, like: tweetObj.like + 1 });
+  const updatedTweet = await getBy({ tweet_id: id });
+  return updatedTweet;
+};
+
+const addRetweet = async (tweetObj, id) => {
+  await db("tweets")
+    .where("tweet_id", id)
+    .update({ tweet: tweetObj.tweet, retweet: tweetObj.retweet + 1 });
+  const updatedTweet = await getBy({ tweet_id: id });
+  return updatedTweet;
+};
 
 const remove = (id) => {
   return db("tweets").where("tweet_id", id).delete();
@@ -56,5 +66,6 @@ module.exports = {
   change,
   remove,
   getBy,
-  addLike
+  addLike,
+  addRetweet,
 };

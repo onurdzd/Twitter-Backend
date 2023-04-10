@@ -50,7 +50,23 @@ const addLikeRestriction=async(req,res,next)=>{
     }
 }
 
+const addRetweetRestriction=async(req,res,next)=>{
+    try {
+    const tweet=await Tweet.getBy({tweet_id:req.params.id})
+    if(tweet.username===req.decodedJWT.username){
+        next({
+            status:400,
+            message:"Kendi tweetini retweet edemezsin"
+        })
+    }else{
+        next()
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,addLikeRestriction
+    postTweetIsUniqe,addLikeRestriction,addRetweetRestriction
 }
