@@ -59,4 +59,21 @@ router.put("/:id/retweet",mwuser.isValidToken,mwtweet.addRetweetRestriction, asy
     }
   });
 
+ router.delete("/:id",mwuser.isValidToken,async(req,res,next)=>{
+    try {
+        const tweetUser=await Tweet.getBy({tweet_id:req.params.id})
+        if(req.decodedJWT.username === tweetUser.username){
+            await Tweet.remove(req.params.id)
+            res.status(200).json({message:`${req.params.id} nolu tweet silindi`})
+        }else{
+            next({
+                status:400,
+                message:"Sana ait olmayan tweeti silemezsin!"
+            })
+        }
+    } catch (error) {
+        next(error)
+    }
+ }) 
+
 module.exports = router;
