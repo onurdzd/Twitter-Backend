@@ -37,7 +37,7 @@ router.post("/login",mw.loginPostDataIsValid,mw.loginUsernameMailIsValid,async (
     }
 })
 
-router.put("/resetPassword/:id",mw.isValidToken,async(req,res,next)=>{
+router.put("/resetPassword/:id",mw.isValidToken,mw.idIsValid,async(req,res,next)=>{
     try {
         const hashedPassword=bcrypt.hashSync(req.body.password,10) 
         const updatedUser=await Users.change({password:hashedPassword},req.params.id)

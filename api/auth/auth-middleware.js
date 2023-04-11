@@ -121,6 +121,22 @@ const isValidToken=(req,res,next)=>{
   }
 }
 
+const idIsValid=(req,res,next)=>{
+  try {
+    if(req.decodedJWT.user_id === req.params.id){
+      next()
+    }else{
+      next({
+        status:400,
+        message:`${req.params.id} nolu hesapta yetkin yok`
+      })
+    }
+  } catch (error) {
+    
+  }
+}
+
+
 const adminYetkisi=(role_id)=>(req,res,next)=>{
   try {
     if(req.decodedJWT && req.decodedJWT.role_id ===role_id){
@@ -142,5 +158,6 @@ module.exports = {
   loginUsernameMailIsValid,
   resetUsernameVarmı,
   isValidToken,
-  adminYetkisi
+  adminYetkisi,
+  idIsValid
 };
