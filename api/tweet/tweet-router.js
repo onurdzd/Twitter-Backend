@@ -80,20 +80,40 @@ router.post(
   }
 );
 
-router.put(
+router.get("/:id/retweet", mwuser.isValidToken, async (req, res, next) => {
+  try {
+    const retweetedTweet = await Tweet.getRetweet(req.params.id);
+    res.status(200).json(retweetedTweet);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post(
   "/:id/retweet",
   mwuser.isValidToken,
-  mwtweet.addRetweetRestriction,
+  mwtweet.retweetRestriction,
   async (req, res, next) => {
     try {
-      const tweet = await Tweet.getBy({ tweet_id: req.params.id });
-      const likedTweet = await Tweet.addRetweet(tweet[0], req.params.id);
-      res.status(200).json(likedTweet);
+      const tweet = await Tweet.getById(req.params.id);
+      if (tweet.tweet_id) {
+        await Tweet.postRetweet({
+          tweet_id: req.params.id,
+          user_id: req.decodedJWT.user_id,
+        });
+        res.status(200).json(`${req.params.id} nolu tweeti retweet ettin!`);
+      } else {
+        next({
+          status: 401,
+          message: `${req.params.id} nolu tweet yoktur`,
+        });
+      }
     } catch (error) {
       next(error);
     }
   }
 );
+
 
 router.delete("/:id", mwuser.isValidToken, async (req, res, next) => {
   try {

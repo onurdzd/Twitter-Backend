@@ -8,8 +8,6 @@ exports.seed = async function(knex) {
   await knex('users').truncate()
   await knex('tweets').truncate()
   await knex('comments').truncate()
-  await knex('likes').truncate()
-  await knex('retweets').truncate()
 
   await knex('roles').insert([
     {role_name:"admin"},
