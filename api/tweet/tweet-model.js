@@ -18,14 +18,13 @@ const getBy = (filter) => {
       "u.username"
     )
     .where(filter)
-    .first();
 };
 
 const getById = async (tweet_id) => {
   const tweet = await db("tweets as t")
     .leftJoin("users as u", "t.user_id", "u.user_id")
     .where("t.tweet_id",tweet_id)
-  if (tweet.length === 0) {
+  if (!tweet ||tweet.length === 0) {
     return [];
   }
 
@@ -35,9 +34,10 @@ const getById = async (tweet_id) => {
     username: tweet[0].username,
     like: tweet[0].like,
     retweet: tweet[0].retweet,
-    comment: [],
+    comment: []
   };
-  const comments=await Comment.getBy({tweet_id:tweet_id})
+  const comments=await Comment.getBy({"t.tweet_id":tweet_id})
+  
   tweetSchema.comment.push(comments)
 
   return tweetSchema;

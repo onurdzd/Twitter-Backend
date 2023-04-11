@@ -13,8 +13,8 @@ router.get("/",mw.adminYetkisi(1) ,async (req, res, next) => {
 
 router.get("/:id", async (req, res, next) => {
   try {
-    const user = await Users.getBy({user_id:req.params.id});
-    if(user){
+    const user = await Users.getById(req.params.id);
+    if(user.user_id){
       res.status(201).json(user);
     }else{
       next({
@@ -31,7 +31,7 @@ router.delete("/:id", async (req, res, next) => {
     try {
       const deletedUser=await Users.getBy({user_id:req.params.id})  
       await Users.remove(req.params.id);
-      res.status(201).json({message:`${deletedUser.username} silindi`});
+      res.status(201).json({message:`${deletedUser[0].username} silindi`});
     } catch (error) {
       next(error)
     }
