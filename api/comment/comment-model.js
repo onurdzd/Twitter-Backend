@@ -1,63 +1,56 @@
 const db = require("../../data/dbconfig");
 
 const getAll = () => {
-  return db("tweets as t")
-    .leftJoin("users as u", "t.user_id", "u.user_id").leftJoin("comments as c","c.tweet_id","t.tweet_id")
+  return db("comments");
+};
+
+const getById = async (comment_id) => {
+  const comment = db("comments as c")
+    .leftJoin("tweets as t", "t.tweet_id", "c.tweet_id")
+    .leftJoin("users as u", "u.user_id", "c.user_id")
+    .where("comment_id", comment_id)
     .select(
+      "c.comment_id",
+      "c.comment",
       "t.tweet_id",
       "t.tweet",
-      "t.retweet",
-      "t.like",
-      "u.user_id",
-      "u.username"
-    );
+      "u.username",
+      "u.role_id"
+    )
+    .first();
+
+  return comment;
 };
 
 const getBy = (filter) => {
-  return db("tweets as t")
-    .leftJoin("users as u", "t.user_id", "u.user_id")
+  return db("comments as c")
+    .leftJoin("tweets as t", "t.tweet_id", "c.tweet_id")
+    .leftJoin("users as u", "u.user_id", "c.user_id")
     .select(
+      "c.comment_id",
+      "c.comment",
       "t.tweet_id",
       "t.tweet",
-      "t.retweet",
-      "t.like",
-      "u.user_id",
-      "u.username"
+      "u.username",
+      "u.role_id"
     )
     .where(filter)
-    .first();
 };
 
-const add = async (tweet) => {
-  const newTweetId = await db("tweets").insert(tweet);
-  const newTweet = await getBy({ tweet_id: newTweetId[0] });
-  return newTweet;
+const add = async (comment) => {
+  const newCommentId = await db("comments").insert(comment);
+  const newComment = await getBy({ comment_id: newCommentId[0] });
+  return newComment;
 };
 
-const change = async (updateTweet, id) => {
-  await db("tweets").where("tweet_id", id).update(updateTweet);
-  const updatedTweet = await getBy({ tweet_id: id });
-  return updatedTweet;
-};
-
-const addLike = async (tweetObj, id) => {
-  await db("tweets")
-    .where("tweet_id", id)
-    .update({ tweet: tweetObj.tweet, like: tweetObj.like + 1 });
-  const updatedTweet = await getBy({ tweet_id: id });
-  return updatedTweet;
-};
-
-const addRetweet = async (tweetObj, id) => {
-  await db("tweets")
-    .where("tweet_id", id)
-    .update({ tweet: tweetObj.tweet, retweet: tweetObj.retweet + 1 });
-  const updatedTweet = await getBy({ tweet_id: id });
-  return updatedTweet;
+const change = async (updateComment, comment_id) => {
+  await db("comments").where("comment_id", comment_id).update(updateComment);
+  const updatedComment = await getBy({ comment_id: comment_id });
+  return updatedComment;
 };
 
 const remove = (id) => {
-  return db("tweets").where("tweet_id", id).delete();
+  return db("comments").where("comment_id", id).delete();
 };
 
 module.exports = {
@@ -66,6 +59,5 @@ module.exports = {
   change,
   remove,
   getBy,
-  addLike,
-  addRetweet,
+  getById,
 };

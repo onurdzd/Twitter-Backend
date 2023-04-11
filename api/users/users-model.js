@@ -1,7 +1,7 @@
 const db = require("../../data/dbconfig");
 
 const getUsers = () => {
-  return db("users");
+  return db("users").join;
 };
 
 const getBy = (filter) => {

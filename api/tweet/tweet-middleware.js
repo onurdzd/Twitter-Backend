@@ -13,7 +13,7 @@ const postTweetCheck=(req,res,next)=>{
                 message:"120 karakterden fazla tweet atılamaz"
             })
         }else{
-            next(error)
+            next()
         }
     } catch (error) {
         next(error)

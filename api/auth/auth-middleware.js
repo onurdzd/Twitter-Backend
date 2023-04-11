@@ -127,7 +127,7 @@ const adminYetkisi=(role_id)=>(req,res,next)=>{
       next()
     }else{
       res.status(403).json({
-        message: "Sadece adminler"
+        message: "Sadece adminler görebilir"
       })
     }
   } catch (error) {

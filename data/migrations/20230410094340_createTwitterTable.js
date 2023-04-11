@@ -36,8 +36,8 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     })
     .createTable("comments", (t) => {
-      t.increments("comments_id");
-      t.string("comment", 65).unique().notNullable();
+      t.increments("comment_id");
+      t.string("comment", 65).notNullable();
       t.integer("tweet_id")
         .unsigned()
         .notNullable()

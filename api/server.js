@@ -11,10 +11,10 @@ const commentRouter=require("./comment/comment-router")
 
 server.use(express.json())
 
-server.use("/api/users",mw.isValidToken,mw.adminYetkisi(1),usersRouter)
+server.use("/api/users",mw.isValidToken,usersRouter)
 server.use("/api/auth",authRouter)
 server.use("/api/tweet",tweetRouter)
-server.use("/api/comment",commentRouter)
+server.use("/api/comment",mw.isValidToken,commentRouter)
 
 server.use((err, req, res, next) => { 
     res.status(err.status || 500).json({
