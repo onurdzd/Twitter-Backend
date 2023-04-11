@@ -46,8 +46,8 @@ const change = async (updateTweet, tweet_id) => {
   return updatedTweet;
 };
 
-const remove = (id) => {
-  return db("tweets").where("tweet_id", id).delete();
+const remove = (tweet_id) => {
+  return db("tweets").where("tweet_id", tweet_id).delete();
 };
 
 const getLike = async (tweet_id) => {

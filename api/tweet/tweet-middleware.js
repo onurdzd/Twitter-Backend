@@ -24,7 +24,7 @@ const postTweetIsUniqe=async(req,res,next)=>{
 try {
     const tweet=await Tweet.getBy({tweet:req.body.tweet})
     const username=await Tweet.getBy({username:req.decodedJWT.username})
-    if(username && tweet){
+    if(username[0] && tweet[0]){
         next({status:400,message:"Aynı tweet i daha önce atmışsın"})
     }else{
         next()

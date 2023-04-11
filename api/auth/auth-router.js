@@ -17,17 +17,17 @@ router.post("/register",mw.registerPostDataIsValid,mw.registerUsernameMailIsVali
 router.post("/login",mw.loginPostDataIsValid,mw.loginUsernameMailIsValid,async (req,res,next)=>{
     try {
         const user=await Users.getBy({"username":req.body.username})
-        const isValidPassword=bcrypt.compareSync(req.body.password,user.password)
+        const isValidPassword=bcrypt.compareSync(req.body.password,user[0].password)
 
         if(user && isValidPassword){
             let token=jwt.sign({
-                username:user.username,
-                user_id:user.user_id,
-                role_id:user.role_id
+                username:user[0].username,
+                user_id:user[0].user_id,
+                role_id:user[0].role_id
             },
             process.env.SECRET,
             { expiresIn: "3d" })
-            res.status(200).json({message:`${user.username} başarıyla giriş yaptın!`,token:token})
+            res.status(200).json({message:`${user[0].username} başarıyla giriş yaptın!`,token:token})
         }else{
             res.status(400).json({message:"Username veya şifre yanlış"})
         }

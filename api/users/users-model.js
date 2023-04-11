@@ -39,7 +39,7 @@ const getById = async (user_id) => {
 const add = async (user) => {
   const newUserId = await db("users").insert(user);
   const newUser = await getBy({ user_id: newUserId[0] });
-  return newUser;
+  return newUser[0];
 };
 
 const change = async (updateInfos, id) => {
@@ -48,8 +48,8 @@ const change = async (updateInfos, id) => {
   return updatedUser;
 };
 
-const remove = (id) => {
-  return db("users").where("user_id", id).delete();
+const remove = (user_id) => {
+  return db("users").where("user_id", user_id).delete();
 };
 
 module.exports = {

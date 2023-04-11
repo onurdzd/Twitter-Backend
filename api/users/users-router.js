@@ -27,7 +27,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", mw.adminYetkisi(1),async (req, res, next) => {
     try {
       const deletedUser=await Users.getBy({user_id:req.params.id})  
       await Users.remove(req.params.id);

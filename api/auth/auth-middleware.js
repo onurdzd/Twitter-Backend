@@ -49,9 +49,9 @@ const registerUsernameMailIsValid = async (req, res, next) => {
   try {
     const username = await Users.getBy({ username: req.body.username });
     const mail = await Users.getBy({ mail: req.body.mail });
-    if (username) {
+    if (username[0]) {
       res.status(400).json({ message: "Username zaten kullanılıyor" });
-    } else if (mail) {
+    } else if (mail[0]) {
       res.status(400).json({ message: "mail zaten kullanılıyor" });
     } else {
       next();
@@ -77,7 +77,7 @@ const loginPostDataIsValid = async (req, res, next) => {
 const loginUsernameMailIsValid = async (req, res, next) => {
   try {
     const username = await Users.getBy({username:req.body.username});
-    if (!username) {
+    if (!username[0]) {
       res.status(400).json({ message: "Username sistemde mevcut değil" });
     }else {
       next();
