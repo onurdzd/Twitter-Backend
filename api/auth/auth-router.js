@@ -7,7 +7,7 @@ const jwt=require("jsonwebtoken")
 router.post("/register",mw.registerPostDataIsValid,mw.registerUsernameMailIsValid,async (req,res,next)=>{
     try {
         const hashedPassword=bcrypt.hashSync(req.body.password,10)
-        const newUser=await Users.add({username:req.body.username, password:hashedPassword,mail:req.body.mail})
+        const newUser=await Users.add({username:req.body.username, password:hashedPassword,mail:req.body.mail,role_id:req.body.role_id ? req.body.role_id : 2})
         res.status(201).json({message:`${newUser.username} Başarıyla kayıt oldun!`})
     } catch (error) {
         next(error)
@@ -22,11 +22,12 @@ router.post("/login",mw.loginPostDataIsValid,mw.loginUsernameMailIsValid,async (
         if(user && isValidPassword){
             let token=jwt.sign({
                 username:user.username,
-                user_id:user.user_id
+                user_id:user.user_id,
+                role_id:user.role_id
             },
             process.env.SECRET,
             { expiresIn: "3d" })
-            res.status(200).json({message:"Başarıyla giriş yaptın",token:token})
+            res.status(200).json({message:`${user.username} başarıyla giriş yaptın!`,token:token})
         }else{
             res.status(400).json({message:"Username veya şifre yanlış"})
         }

@@ -121,11 +121,26 @@ const isValidToken=(req,res,next)=>{
   }
 }
 
+const adminYetkisi=(role_id)=>(req,res,next)=>{
+  try {
+    if(req.decodedJWT && req.decodedJWT.role_id ===role_id){
+      next()
+    }else{
+      res.status(403).json({
+        message: "Sadece adminler"
+      })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   registerPostDataIsValid,
   registerUsernameMailIsValid,
   loginPostDataIsValid,
   loginUsernameMailIsValid,
   resetUsernameVarmı,
-  isValidToken
+  isValidToken,
+  adminYetkisi
 };

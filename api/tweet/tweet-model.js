@@ -1,16 +1,8 @@
 const db = require("../../data/dbconfig");
 
-const getAll = () => {
-  return db("tweets as t")
-    .leftJoin("users as u", "t.user_id", "u.user_id")
-    .select(
-      "t.tweet_id",
-      "t.tweet",
-      "t.retweet",
-      "t.like",
-      "u.user_id",
-      "u.username"
-    );
+const getAll = async () => {
+  const tweets = await db("tweets as t")
+  return tweets;
 };
 
 const getBy = (filter) => {
