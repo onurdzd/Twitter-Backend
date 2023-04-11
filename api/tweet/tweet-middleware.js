@@ -34,7 +34,7 @@ try {
 }
 }
 
-const addLikeRestriction=async(req,res,next)=>{
+const likeRestiriction=async(req,res,next)=>{
     try {
     const tweet=await Tweet.getBy({tweet_id:req.params.id})
     if(tweet.username===req.decodedJWT.username){
@@ -68,5 +68,5 @@ const addRetweetRestriction=async(req,res,next)=>{
 
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,addLikeRestriction,addRetweetRestriction
+    postTweetIsUniqe,likeRestiriction,addRetweetRestriction
 }

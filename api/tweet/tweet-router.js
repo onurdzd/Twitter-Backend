@@ -15,13 +15,13 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const tweet = await Tweet.getById(req.params.id);
-    if(tweet.tweet_id){
+    if (tweet.tweet_id) {
       res.status(200).json(tweet);
-    }else{
+    } else {
       next({
-        status:401,
-        message:`${req.params.id} id li tweet henüz atılmamış`
-      })
+        status: 401,
+        message: `${req.params.id} id li tweet henüz atılmamış`,
+      });
     }
   } catch (error) {
     next(error);
@@ -46,17 +46,45 @@ router.post(
   }
 );
 
-router.put("/:id/like",mwuser.isValidToken,mwtweet.addLikeRestriction, async (req, res, next) => {
+router.get("/:id/like", mwuser.isValidToken, async (req, res, next) => {
   try {
-    const tweet = await Tweet.getBy({ tweet_id: req.params.id });
-    const likedTweet = await Tweet.addLike(tweet[0], req.params.id);
+    const likedTweet = await Tweet.getLike(req.params.id);
     res.status(200).json(likedTweet);
   } catch (error) {
     next(error);
   }
 });
 
-router.put("/:id/retweet",mwuser.isValidToken,mwtweet.addRetweetRestriction, async (req, res, next) => {
+router.post(
+  "/:id/like",
+  mwuser.isValidToken,
+  mwtweet.likeRestiriction,
+  async (req, res, next) => {
+    try {
+      const tweet = await Tweet.getById(req.params.id);
+      if (tweet.tweet_id) {
+        await Tweet.postLike({
+          tweet_id: req.params.id,
+          user_id: req.decodedJWT.user_id,
+        });
+        res.status(200).json(`${req.params.id} nolu tweeti beğendin!`);
+      } else {
+        next({
+          status: 401,
+          message: `${req.params.id} nolu tweet yoktur`,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.put(
+  "/:id/retweet",
+  mwuser.isValidToken,
+  mwtweet.addRetweetRestriction,
+  async (req, res, next) => {
     try {
       const tweet = await Tweet.getBy({ tweet_id: req.params.id });
       const likedTweet = await Tweet.addRetweet(tweet[0], req.params.id);
@@ -64,26 +92,27 @@ router.put("/:id/retweet",mwuser.isValidToken,mwtweet.addRetweetRestriction, asy
     } catch (error) {
       next(error);
     }
-  });
+  }
+);
 
- router.delete("/:id",mwuser.isValidToken,async(req,res,next)=>{
-    try {
-        const tweetUser=await Tweet.getBy({tweet_id:req.params.id})
-        if(req.decodedJWT.role_id === 1){
-          await Tweet.remove(req.params.id)
-            res.status(200).json({message:`${req.params.id} nolu tweet silindi`})
-        }else if(req.decodedJWT.username === tweetUser[0].username){
-            await Tweet.remove(req.params.id)
-            res.status(200).json({message:`${req.params.id} nolu tweet silindi`})
-        }else{
-            next({
-                status:400,
-                message:"Sana ait olmayan tweeti silemezsin!"
-            })
-        }
-    } catch (error) {
-        next(error)
+router.delete("/:id", mwuser.isValidToken, async (req, res, next) => {
+  try {
+    const tweetUser = await Tweet.getBy({ tweet_id: req.params.id });
+    if (req.decodedJWT.role_id === 1) {
+      await Tweet.remove(req.params.id);
+      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
+    } else if (req.decodedJWT.username === tweetUser[0].username) {
+      await Tweet.remove(req.params.id);
+      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
+    } else {
+      next({
+        status: 400,
+        message: "Sana ait olmayan tweeti silemezsin!",
+      });
     }
- }) 
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

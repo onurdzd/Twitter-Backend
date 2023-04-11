@@ -25,8 +25,6 @@ exports.up = function (knex) {
     .createTable("tweets", (t) => {
       t.increments("tweet_id");
       t.string("tweet", 120).unique().notNullable();
-      t.integer("retweet").defaultTo(0);
-      t.integer("like").defaultTo(0);
       t.integer("user_id")
         .unsigned()
         .notNullable()
@@ -54,6 +52,7 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     })
     .createTable("likes", (t) => {
+      t.increments("like_id")
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -70,6 +69,7 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     })
     .createTable("retweets", (t) => {
+      t.increments("retweet_id")
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
