@@ -41,7 +41,7 @@ const getById = async (user_id) => {
 
   const tweets = await Tweet.getBy({ "t.user_id": user_id });
   const comments = await Comment.getBy({ "c.user_id": user_id });
-  const retweets = await Tweet.getRetweets(user_id);
+  const retweets = await Tweet.getRetweetsByUserId(user_id);
   const likes = await Tweet.getLikes(user_id);
   const favorites = await Tweet.getFavorites(user_id);
   const followings = await getFollowingsByUser(user_id);

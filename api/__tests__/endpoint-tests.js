@@ -160,5 +160,13 @@ describe("------------ [GET]/[POST] api/favorite -------------",()=>{
         const favorite=await Tweet.getFavorite(1)
         expect(favorite).toHaveProperty("favoriteCount",1)
     })
+    test("[19] 1 nolu tweet favoriden silinebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/tweet/1/favorite").set({"authorization":logres.body.token})
+        const res=  await request(server).delete("/api/tweet/1/favorite").set({"authorization":logres.body.token})
+        const favorite=await Tweet.getFavorite(1)
+        expect(favorite).toHaveProperty("favoriteCount",0)
+    })
 })
 

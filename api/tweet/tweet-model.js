@@ -100,11 +100,15 @@ const getLike = async (tweet_id) => {
   return likeSchema;
 };
 
-const postLike = async (likeids) => {
+const postLike = (likeids) => {
   return db("likes").insert(likeids);
 };
 
-const getRetweets = async (user_id) => {
+const deleteLike=(likeids)=>{
+  return db("likes").delete(likeids);
+}
+
+const getRetweetsByUserId = async (user_id) => {
   const retweets = await db("retweets as r")
     .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
     .leftJoin("users as u", "u.user_id", "r.user_id")
@@ -129,6 +133,10 @@ const getRetweet = async (tweet_id) => {
 const postRetweet = async (retweetIds) => {
   return db("retweets").insert(retweetIds);
 };
+
+const deleteRetweet=(retweetids)=>{
+  return db("retweets").delete(retweetids);
+}
 
 const getFavorites = async (user_id) => {
   const favorites = await db("favorites as f")
@@ -175,9 +183,11 @@ module.exports = {
   getLikes,
   getLike,
   postLike,
-  getRetweets,
+  deleteLike,
+  getRetweetsByUserId,
   getRetweet,
   postRetweet,
+  deleteRetweet,
   getFavorites,
   getFavorite,
   postFavorite,

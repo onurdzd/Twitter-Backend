@@ -54,14 +54,35 @@ try {
 }
 }
 
-const likeRestiriction=async(req,res,next)=>{
+const likeRestirictions=async(req,res,next)=>{
     try {
-    const tweet=await Tweet.getBy({tweet_id:req.params.id})
-    if(tweet[0].username===req.decodedJWT.username){
+    const tweet=await Tweet.getById(req.params.id)
+    if(tweet.username===req.decodedJWT.username){
         next({
             status:400,
             message:"Kendi tweetine like atamazsın"
         })
+    }else if(tweet.likes[0].likeDetails.some(item=> item.tweet_id == req.params.id)){
+        next({
+            status:400,
+            message:"Tweet zaten beğeni listende bulunuyor"
+        })
+    }else{
+        next()
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+const likeRemoveRestriction=async(req,res,next)=>{
+    try {
+    const tweet=await Tweet.getById(req.params.id)
+    if(tweet.likes[0].likeDetails.length===0){
+        next({
+            status:400,
+            message:"Beğendiğin bir tweet değil"
+        }) 
     }else{
         next()
     }
@@ -72,12 +93,28 @@ const likeRestiriction=async(req,res,next)=>{
 
 const retweetRestriction=async(req,res,next)=>{
     try {
-    const tweet=await Tweet.getBy({tweet_id:req.params.id})
-    if(tweet[0].username===req.decodedJWT.username){
+        const tweet=await Tweet.getById(req.params.id)
+        if(tweet.retweets[0].retweetDetails.some(item=> item.tweet_id == req.params.id)){
+            next({
+                status:400,
+                message:"Tweet i zaten retweet etmişsin"
+            })
+        }else{
+        next()
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+const retweetRemoveRestriction=async(req,res,next)=>{
+    try {
+    const tweet=await Tweet.getById(req.params.id)
+    if(tweet.retweets[0].retweetDetails.length===0){
         next({
             status:400,
-            message:"Kendi tweetini retweet edemezsin"
-        })
+            message:"Retweet ettiğin bir tweet değil"
+        }) 
     }else{
         next()
     }
@@ -118,8 +155,7 @@ const favoriteRemoveRestriction=async(req,res,next)=>{
     }
 }
 
-
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,likeRestiriction,retweetRestriction,accountTypeCheck,favoriteAddRestriction,favoriteRemoveRestriction
+    postTweetIsUniqe,likeRestirictions,likeRemoveRestriction,retweetRestriction,retweetRemoveRestriction,accountTypeCheck,favoriteAddRestriction,favoriteRemoveRestriction
 }
