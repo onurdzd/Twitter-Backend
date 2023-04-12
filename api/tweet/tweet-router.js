@@ -123,6 +123,30 @@ router.get("/:id/favorite", mwuser.isValidToken, async (req, res, next) => {
   }
 });
 
+router.post(
+  "/:id/favorite",
+  mwuser.isValidToken,
+  async (req, res, next) => {
+    try {
+      const tweet = await Tweet.getById(req.params.id);
+      if (tweet.tweet_id) {
+        await Tweet.postFavorite({
+          tweet_id: req.params.id,
+          user_id: req.decodedJWT.user_id,
+        });
+        res.status(200).json(`${req.params.id} nolu tweeti favorilerine ekledin!`);
+      } else {
+        next({
+          status: 401,
+          message: `${req.params.id} nolu tweet yoktur`,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 router.delete("/:id", mwuser.isValidToken, async (req, res, next) => {
   try {

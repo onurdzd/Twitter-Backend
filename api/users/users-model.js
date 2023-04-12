@@ -30,6 +30,7 @@ const getById = async (user_id) => {
     tweets: [],
     followings:[],
     followers:[],
+    favorites:[],
     comments: [],
     retweets:[],
     likes:[]
@@ -37,12 +38,15 @@ const getById = async (user_id) => {
 
   const tweets = await Tweet.getBy({ "t.user_id": user_id });
   const comments = await Comment.getBy({ "c.user_id": user_id });
-  const retweets = await Tweet.getBy({ "t.user_id": user_id });
-  const likes = await Tweet.getBy({ "t.user_id": user_id });
+  const retweets = await Tweet.getRetweets(user_id)
+  const likes = await Tweet.getLikes(user_id)
+  const favorites = await Tweet.getFavorites(user_id)
+  
   userSchema.tweets.push(tweets);
   userSchema.comments.push(comments);
   userSchema.retweets.push(retweets);
   userSchema.likes.push(likes);
+  userSchema.favorites.push(favorites);
 
   return userSchema;
 };
