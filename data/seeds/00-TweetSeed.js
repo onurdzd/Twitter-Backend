@@ -27,6 +27,7 @@ exports.seed = async function(knex) {
     {username: 'onur' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur@onur.com",role_id:1,account_type_id:1},
     {username: 'onur2' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur2@onur.com",role_id:2,account_type_id:2},
     {username: 'onur3' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur3@onur.com",role_id:2,account_type_id:1},
+    {username: 'onur4' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur4@onur.com",role_id:2,account_type_id:1},
   ]);
   await knex('tweets').insert([
     {tweet: 'tweet1',user_id:1},

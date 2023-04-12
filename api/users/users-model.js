@@ -74,14 +74,30 @@ const remove = (user_id) => {
   return db("users").where("user_id", user_id).delete();
 };
 
+const getFollowingsByUser = async (user_id) => {
+  const followings = await db("followings as fg").where("fg.user_id", user_id);
+  return followings;
+};
+
+const addFollowing = (ids) => {
+  return db("followings").insert(ids);
+};
+
+const removeFollowing = (filter) => {
+  return db("followings").where(filter).delete();
+};
+
 const getFollowersByUser = async (user_id) => {
   const followers = await db("followers as fr").where("fr.user_id", user_id);
   return followers;
 };
 
-const getFollowingsByUser = async (user_id) => {
-  const followings = await db("followings as fg").where("fg.user_id", user_id);
-  return followings;
+const addFollower = (ids) => {
+  return db("followers").insert(ids);
+};
+
+const removeFollowers = (filter) => {
+  return db("followers").where(filter).delete();
 };
 
 module.exports = {
@@ -93,4 +109,8 @@ module.exports = {
   getById,
   getFollowersByUser,
   getFollowingsByUser,
+  addFollowing,
+  addFollower,
+  removeFollowing,
+  removeFollowers,
 };

@@ -159,5 +159,5 @@ module.exports = {
   resetUsernameVarmı,
   isValidToken,
   adminYetkisi,
-  idIsValid
+  idIsValid,
 };

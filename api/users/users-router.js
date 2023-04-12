@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const Users = require("./users-model");
-const mw = require("../auth/auth-middleware");
+const mwauth = require("../auth/auth-middleware");
+const mwuser=require("./users-middleware")
 
-router.get("/", mw.adminYetkisi(1), async (req, res, next) => {
+router.get("/", mwauth.adminYetkisi(1), async (req, res, next) => {
   try {
     const users = await Users.getUsers();
     res.status(201).json(users);
@@ -27,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", mw.adminYetkisi(1), async (req, res, next) => {
+router.delete("/:id", mwauth.adminYetkisi(1), async (req, res, next) => {
   try {
     const deletedUser = await Users.getBy({ user_id: req.params.id });
     await Users.remove(req.params.id);
@@ -37,7 +38,7 @@ router.delete("/:id", mw.adminYetkisi(1), async (req, res, next) => {
   }
 });
 
-router.get("/:id/followings",mw.isValidToken, async (req, res, next) => {
+router.get("/:id/followings",mwauth.isValidToken, async (req, res, next) => {
   try {
     const followings = await Users.getFollowingsByUser(req.params.id);
     const user = await Users.getById(req.params.id);
@@ -56,7 +57,7 @@ router.get("/:id/followings",mw.isValidToken, async (req, res, next) => {
   }
 });
 
-router.get("/:id/followers",mw.isValidToken, async (req, res, next) => {
+router.get("/:id/followers",mwauth.isValidToken, async (req, res, next) => {
   try {
     const followers = await Users.getFollowersByUser(req.params.id);
     const user = await Users.getById(req.params.id);
@@ -75,12 +76,26 @@ router.get("/:id/followers",mw.isValidToken, async (req, res, next) => {
   }
 });
 
-router.post("/:id/follow",(req,res,next)=>{
+router.post("/:id/follow",mwauth.isValidToken,mwuser.followRestriction,async(req,res,next)=>{
 try {
-  
+  const user=await Users.getById(req.decodedJWT.user_id)
+  await Users.addFollowing({user_id:user.user_id,following_user_id:req.params.id})
+  await Users.addFollower({user_id:req.params.id,follower_user_id:user.user_id})
+  res.status(200).json({message:`${req.params.id} nolu kullanıcıyı takip etmeye başladın!`})
 } catch (error) {
-  
+  next(error)
 }
 })
+
+router.delete("/:id/follow",mwauth.isValidToken,mwuser.unfollowRestriction,async(req,res,next)=>{
+  try {
+    await Users.removeFollowers({user_id:req.params.id,follower_user_id:req.decodedJWT.user_id})
+    await Users.removeFollowing({user_id:req.decodedJWT.user_id,following_user_id:req.params.id})
+    res.status(200).json({message:`${req.params.id} nolu hesabı takip ten çıktın!`})
+  } catch (error) {
+    next(error)
+  }
+}
+)
 
 module.exports = router;
