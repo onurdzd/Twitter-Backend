@@ -50,9 +50,9 @@ const getById = async (tweet_id) => {
     likes: [],
   };
   const comments = await Comment.getBy({ "t.tweet_id": tweet_id });
-  const retweets = await getRetweets(tweet[0].user_id);
-  const likes = await getLikes(tweet[0].user_id);
-  const favorites = await getFavorites(tweet[0].user_id);
+  const retweets = await getRetweet(tweet[0].tweet_id);
+  const likes = await getLike(tweet[0].tweet_id);
+  const favorites = await getFavorite(tweet[0].tweet_id);
 
   tweetSchema.comments.push(comments);
   tweetSchema.retweets.push(retweets);
@@ -83,7 +83,6 @@ const getLikes = async (user_id) => {
     .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
     .leftJoin("users as u", "u.user_id", "r.user_id")
     .select("r.like_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username").where("u.user_id",user_id);
-
   return likes;
 };
 

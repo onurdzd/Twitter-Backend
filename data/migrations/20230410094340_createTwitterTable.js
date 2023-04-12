@@ -18,7 +18,6 @@ exports.up = function (knex) {
       t.string("password", 120).notNullable();
       t.string("mail", 30).unique().notNullable();
       t.integer("role_id")
-        .defaultTo(2)
         .notNullable()
         .unsigned()
         .references("role_id")
@@ -112,7 +111,27 @@ exports.up = function (knex) {
         .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
-    });
+    }).createTable("followers",t=>{
+      t.increments("follower_id")
+      t.integer("follower_user_id").notNullable().unsigned()
+      t.integer("user_id")
+      .unsigned()
+      .notNullable()
+      .references("user_id")
+      .inTable("users")
+      .onUpdate("CASCADE")
+      .onDelete("CASCADE");
+    }).createTable("followings",t=>{
+      t.increments("follower_id")
+      t.integer("following_user_id").notNullable().unsigned()
+      t.integer("user_id")
+      .unsigned()
+      .notNullable()
+      .references("user_id")
+      .inTable("users")
+      .onUpdate("CASCADE")
+      .onDelete("CASCADE");
+    })
 };
 
 /**
@@ -121,6 +140,8 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
   return knex.schema
+  .dropTableIfExists("followings")
+  .dropTableIfExists("followers")
   .dropTableIfExists("favorites")
     .dropTableIfExists("retweets")
     .dropTableIfExists("likes")

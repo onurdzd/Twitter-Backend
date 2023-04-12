@@ -12,6 +12,8 @@ exports.seed = async function(knex) {
   await knex('likes').truncate()
   await knex('retweets').truncate()
   await knex('favorites').truncate()
+  await knex('followings').truncate()
+  await knex('followers').truncate()
 
   await knex('account_types').insert([
     {account_type_name:"public"},
@@ -24,6 +26,7 @@ exports.seed = async function(knex) {
   await knex('users').insert([
     {username: 'onur' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur@onur.com",role_id:1,account_type_id:1},
     {username: 'onur2' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur2@onur.com",role_id:2,account_type_id:2},
+    {username: 'onur3' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur3@onur.com",role_id:2,account_type_id:1},
   ]);
   await knex('tweets').insert([
     {tweet: 'tweet1',user_id:1},
@@ -54,5 +57,15 @@ exports.seed = async function(knex) {
     {user_id: 2,tweet_id:3},
     {user_id: 1,tweet_id:2},
     {user_id: 2,tweet_id:4},
+  ]);
+  await knex('followings').insert([
+    {user_id: 1,following_user_id:2},
+    {user_id: 1,following_user_id:3},
+    {user_id: 2,following_user_id:3},
+  ]);
+  await knex('followers').insert([
+    {user_id: 2,follower_user_id:1},
+    {user_id: 3,follower_user_id:1},
+    {user_id: 3,follower_user_id:2},
   ]);
 };
