@@ -20,10 +20,10 @@ const accountTypeCheck=async(req,res,next)=>{
     }
 }
 
-const isTweetValid=(req,res,next)=>{
+const isTweetValid=async (req,res,next)=>{
     try {
         const tweet=await Tweet.getById(req.params.id)
-        if(!tweet){
+        if(!tweet.tweet_id){
             next({
                 status: 401,
                 message: `${req.params.id} nolu tweet yoktur`,

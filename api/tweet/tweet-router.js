@@ -12,17 +12,10 @@ router.get("/",mwauth.adminYetkisi(1), async (req, res, next) => {
   }
 });
 
-router.get("/:id",mwtweet.accountTypeCheck, async (req, res, next) => {
+router.get("/:id",mwtweet.isTweetValid,mwtweet.accountTypeCheck, async (req, res, next) => {
   try {
     const tweet = await Tweet.getById(req.params.id);
-    if (tweet.tweet_id) {
       res.status(200).json(tweet);
-    } else {
-      next({
-        status: 401,
-        message: `${req.params.id} id li tweet henüz atılmamış`,
-      });
-    }
   } catch (error) {
     next(error);
   }
@@ -80,40 +73,24 @@ router.post(
   mwtweet.likeRestirictions,
   async (req, res, next) => {
     try {
-      const tweet = await Tweet.getById(req.params.id);
-      if (tweet.tweet_id) {
         await Tweet.postLike({
           tweet_id: req.params.id,
           user_id: req.decodedJWT.user_id,
         });
         res.status(200).json(`${req.params.id} nolu tweeti beğendin!`);
-      } else {
-        next({
-          status: 401,
-          message: `${req.params.id} nolu tweet yoktur`,
-        });
-      }
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.delete("/:id/like",mwtweet.likeRemoveRestriction,async(req,res,next)=>{
+router.delete("/:id/like",mwtweet.isTweetValid,mwtweet.likeRemoveRestriction,async(req,res,next)=>{
   try {
-    const tweet = await Tweet.getById(req.params.id);
-    if (tweet.tweet_id) {
       await Tweet.deleteLike({
         tweet_id: req.params.id,
         user_id: req.decodedJWT.user_id,
       });
       res.status(200).json(`${req.params.id} nolu tweet beğenisini kaldırdın!`);
-    } else {
-      next({
-        status: 401,
-        message: `${req.params.id} nolu tweet yoktur`,
-      });
-    }
   } catch (error) {
     next(error);
   }
@@ -130,44 +107,28 @@ router.get("/:id/retweet",  async (req, res, next) => {
 
 router.post(
   "/:id/retweet",
-  
+  mwtweet.isTweetValid,
   mwtweet.retweetRestriction,
   async (req, res, next) => {
     try {
-      const tweet = await Tweet.getById(req.params.id);
-      if (tweet.tweet_id) {
         await Tweet.postRetweet({
           tweet_id: req.params.id,
           user_id: req.decodedJWT.user_id,
         });
         res.status(200).json(`${req.params.id} nolu tweeti retweet ettin!`);
-      } else {
-        next({
-          status: 401,
-          message: `${req.params.id} nolu tweet yoktur`,
-        });
-      }
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.delete("/:id/retweet",mwtweet.retweetRemoveRestriction,async(req,res,next)=>{
+router.delete("/:id/retweet",mwtweet.isTweetValid,mwtweet.retweetRemoveRestriction,async(req,res,next)=>{
   try {
-    const tweet = await Tweet.getById(req.params.id);
-    if (tweet.tweet_id) {
       await Tweet.deleteRetweet({
         tweet_id: req.params.id,
         user_id: req.decodedJWT.user_id,
       });
       res.status(200).json(`${req.params.id} nolu tweet retweet listenden kaldırıldı!`);
-    } else {
-      next({
-        status: 401,
-        message: `${req.params.id} nolu tweet yoktur`,
-      });
-    }
   } catch (error) {
     next(error);
   }
@@ -183,49 +144,30 @@ router.get("/:id/favorite",  async (req, res, next) => {
 });
 
 router.post(
-  "/:id/favorite",mwtweet.favoriteAddRestriction,
+  "/:id/favorite",mwtweet.isTweetValid,mwtweet.favoriteAddRestriction,
   async (req, res, next) => {
     try {
-      const tweet = await Tweet.getById(req.params.id);
-      if (tweet.tweet_id) {
         await Tweet.postFavorite({
           tweet_id: req.params.id,
           user_id: req.decodedJWT.user_id,
         });
         res.status(200).json(`${req.params.id} nolu tweeti favorilerine ekledin!`);
-      } else {
-        next({
-          status: 401,
-          message: `${req.params.id} nolu tweet yoktur`,
-        });
-      }
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.delete("/:id/favorite",mwtweet.favoriteRemoveRestriction,async(req,res,next)=>{
+router.delete("/:id/favorite",mwtweet.isTweetValid,mwtweet.favoriteRemoveRestriction,async(req,res,next)=>{
   try {
-    const tweet = await Tweet.getById(req.params.id);
-    if (tweet.tweet_id) {
       await Tweet.deleteFavorite({
         tweet_id: req.params.id,
         user_id: req.decodedJWT.user_id,
       });
       res.status(200).json(`${req.params.id} nolu tweeti favorilerinden sildin!`);
-    } else {
-      next({
-        status: 401,
-        message: `${req.params.id} nolu tweet yoktur`,
-      });
-    }
   } catch (error) {
     next(error);
   }
 })
-
-
-
 
 module.exports = router;

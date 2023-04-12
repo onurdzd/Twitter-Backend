@@ -12,7 +12,7 @@ const getUsers = () => {
 
 const getBy = (filter) => {
   return db("users as u")
-    .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id")
+    .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id").leftJoin("roles as r","u.role_id","r.role_id")
     .where(filter);
 };
 
