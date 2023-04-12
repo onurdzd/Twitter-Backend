@@ -33,7 +33,7 @@ describe("------------ [POST] api/auth -------------",()=>{
     })
 })
 
-describe("------------ [GET] api/users -------------",()=>{
+describe("------------ [GET]/[POST] api/users -------------",()=>{
     test("[3] tüm kullanıcıları sadece admin görebiliyor",async ()=>{
         await request(server).post("/api/auth/register").send(newUser)
         const logres=await request(server).post("/api/auth/login").send(loginInfo)
@@ -41,7 +41,6 @@ describe("------------ [GET] api/users -------------",()=>{
         expect(res.body.message).toMatch(/Sadece adminler görebilir/)
     })
     test("[4] admin tüm kullanıcıları görebiliyor",async ()=>{
-        await request(server).post("/api/auth/register").send(adminUser)
         const logres=await request(server).post("/api/auth/login").send(adminLogin)
         const res=await request(server).get("/api/users").set({"authorization":logres.body.token})
         const users=await User.getUsers()
@@ -49,9 +48,8 @@ describe("------------ [GET] api/users -------------",()=>{
     })
 })
 
-describe("------------ [GET] api/users -------------",()=>{
+describe("------------ [GET]/[POST] api/users -------------",()=>{
     test("[5] admin kullanıcı silebiliyor",async ()=>{
-        await request(server).post("/api/auth/register").send(adminUser)
         const logres=await request(server).post("/api/auth/login").send(adminLogin)
         const res=await request(server).delete("/api/users/2").set({"authorization":logres.body.token})
         const user2=await User.getById(2)
@@ -60,7 +58,7 @@ describe("------------ [GET] api/users -------------",()=>{
     })
 })
 
-describe("------------ [GET] api/tweet -------------",()=>{
+describe("------------ [GET]/[POST] api/tweet -------------",()=>{
     test("[6] admin tüm tweetleri görebiliyor",async ()=>{
         await request(server).post("/api/auth/register").send(adminUser)
         const logres=await request(server).post("/api/auth/login").send(adminLogin)
@@ -88,6 +86,79 @@ describe("------------ [GET] api/tweet -------------",()=>{
         const tweet=await Tweet.getById(5)
         expect(tweet).toHaveLength(0)
         expect(res.body.message).toMatch(/silindi/)
+    })
+})
+
+describe("------------ [GET]/[POST] api/users/:id/following -------------",()=>{
+    test("[10] kullanıcı farklı bir kullanıcıyı takip edebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).post("/api/users/4/follow").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/kullanıcıyı takip etmeye başladın/)
+    })
+    test("[11] kullanıcı kendisini takip edemiyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).post("/api/users/5/follow").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/takip edemezsin/)
+    })
+    test("[12] kullanıcı farklı bir kullanıcıyı unfollow edebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/users/4/follow").set({"authorization":logres.body.token})
+        const res=await request(server).delete("/api/users/4/follow").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/takipten çıktın/)
+    })
+})
+
+describe("------------ [GET]/[POST] api/comment -------------",()=>{
+    test("[13] tüm yorumları sadece admin görebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).get("/api/comment").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/admin/)
+    })
+    test("[14] admin tüm yorumları görebiliyor",async ()=>{
+        const logres=await request(server).post("/api/auth/login").send(adminLogin)
+        const res=await request(server).get("/api/comment").set({"authorization":logres.body.token})
+        const comments=await Comment.getAll()
+        expect(res.body).toHaveLength(comments.length)
+    })
+    test("[15] Kullanıcı 1 numaralı tweet e yorum yazabiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).post("/api/comment/tweet/1").set({"authorization":logres.body.token}).send({comment:"deneme"})
+        const comment=await Comment.getById(8)
+        expect(comment).toBeDefined()
+    })
+    test("[16] Kullanıcı yorumunu silebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/comment/tweet/1").set({"authorization":logres.body.token}).send({comment:"deneme"})
+        const res= await request(server).delete("/api/comment/8").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/silindi/)
+    })
+    test("[17] Kullanıcı farklı kullanıcının yorumunu silemiyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res= await request(server).delete("/api/comment/7").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/silemezsin/)
+    })
+})
+
+describe("------------ [GET]/[POST] api/favorite -------------",()=>{
+    test("[18] 2 nolu tweete gelen favori sayısı doğru geliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).get("/api/tweet/2/favorite").set({"authorization":logres.body.token})
+        expect(res.body.favoriteCount).toEqual(1)
+    })
+    test("[18] 1 nolu tweet favoriye eklenebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).post("/api/tweet/1/favorite").set({"authorization":logres.body.token})
+        const favorite=await Tweet.getFavorite(1)
+        expect(favorite).toHaveProperty("favoriteCount",1)
     })
 })
 

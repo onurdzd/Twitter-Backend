@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const mwuser = require("../auth/auth-middleware");
+const mwauth = require("../auth/auth-middleware");
 const Tweet = require("./tweet-model");
 const mwtweet = require("./tweet-middleware");
 
-router.get("/", async (req, res, next) => {
+router.get("/",mwauth.adminYetkisi(1), async (req, res, next) => {
   try {
     const tweets = await Tweet.getAll();
     res.status(200).json(tweets);
@@ -30,7 +30,7 @@ router.get("/:id",mwtweet.accountTypeCheck, async (req, res, next) => {
 
 router.post(
   "/",
-  mwuser.isValidToken,
+  
   mwtweet.postTweetCheck,
   mwtweet.postTweetIsUniqe,
   async (req, res, next) => {
@@ -46,7 +46,7 @@ router.post(
   }
 );
 
-router.get("/:id/like", mwuser.isValidToken, async (req, res, next) => {
+router.get("/:id/like",  async (req, res, next) => {
   try {
     const likedTweet = await Tweet.getLike(req.params.id);
     res.status(200).json(likedTweet);
@@ -57,7 +57,7 @@ router.get("/:id/like", mwuser.isValidToken, async (req, res, next) => {
 
 router.post(
   "/:id/like",
-  mwuser.isValidToken,
+  
   mwtweet.likeRestiriction,
   async (req, res, next) => {
     try {
@@ -80,7 +80,7 @@ router.post(
   }
 );
 
-router.get("/:id/retweet", mwuser.isValidToken, async (req, res, next) => {
+router.get("/:id/retweet",  async (req, res, next) => {
   try {
     const retweetedTweet = await Tweet.getRetweet(req.params.id);
     res.status(200).json(retweetedTweet);
@@ -91,7 +91,7 @@ router.get("/:id/retweet", mwuser.isValidToken, async (req, res, next) => {
 
 router.post(
   "/:id/retweet",
-  mwuser.isValidToken,
+  
   mwtweet.retweetRestriction,
   async (req, res, next) => {
     try {
@@ -114,7 +114,27 @@ router.post(
   }
 );
 
-router.get("/:id/favorite", mwuser.isValidToken, async (req, res, next) => {
+router.delete("/:id",  async (req, res, next) => {
+  try {
+    const tweetUser = await Tweet.getBy({ tweet_id: req.params.id });
+    if (req.decodedJWT.role_id === 1) {
+      await Tweet.remove(req.params.id);
+      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
+    } else if (req.decodedJWT.username === tweetUser[0].username) {
+      await Tweet.remove(req.params.id);
+      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
+    } else {
+      next({
+        status: 400,
+        message: "Sana ait olmayan tweeti silemezsin!",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:id/favorite",  async (req, res, next) => {
   try {
     const favoritedTweet = await Tweet.getFavorite(req.params.id);
     res.status(200).json(favoritedTweet);
@@ -124,8 +144,7 @@ router.get("/:id/favorite", mwuser.isValidToken, async (req, res, next) => {
 });
 
 router.post(
-  "/:id/favorite",
-  mwuser.isValidToken,
+  "/:id/favorite",mwtweet.favoriteAddRestriction,
   async (req, res, next) => {
     try {
       const tweet = await Tweet.getById(req.params.id);
@@ -147,25 +166,27 @@ router.post(
   }
 );
 
-
-router.delete("/:id", mwuser.isValidToken, async (req, res, next) => {
+router.delete("/:id/favorite",mwtweet.favoriteRemoveRestriction,async(req,res,next)=>{
   try {
-    const tweetUser = await Tweet.getBy({ tweet_id: req.params.id });
-    if (req.decodedJWT.role_id === 1) {
-      await Tweet.remove(req.params.id);
-      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
-    } else if (req.decodedJWT.username === tweetUser[0].username) {
-      await Tweet.remove(req.params.id);
-      res.status(200).json({ message: `${req.params.id} nolu tweet silindi` });
+    const tweet = await Tweet.getById(req.params.id);
+    if (tweet.tweet_id) {
+      await Tweet.deleteFavorite({
+        tweet_id: req.params.id,
+        user_id: req.decodedJWT.user_id,
+      });
+      res.status(200).json(`${req.params.id} nolu tweeti favorilerinden sildin!`);
     } else {
       next({
-        status: 400,
-        message: "Sana ait olmayan tweeti silemezsin!",
+        status: 401,
+        message: `${req.params.id} nolu tweet yoktur`,
       });
     }
   } catch (error) {
     next(error);
   }
-});
+})
+
+
+
 
 module.exports = router;

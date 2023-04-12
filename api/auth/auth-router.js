@@ -24,6 +24,7 @@ router.post("/login",mw.loginPostDataIsValid,mw.loginUsernameMailIsValid,async (
                 username:user[0].username,
                 user_id:user[0].user_id,
                 account_type_name:user[0].account_type_name,
+                role_id:user[0].role_id,
                 role_name:user[0].role_name,
                 tweets:user[0].tweets,
                 comments:user[0].comments,

@@ -86,7 +86,40 @@ const retweetRestriction=async(req,res,next)=>{
     }
 }
 
+const favoriteAddRestriction=async(req,res,next)=>{
+    try {
+    const tweet=await Tweet.getById(req.params.id)
+    if(tweet.favorites[0].favoriteDetails.some(item=> item.tweet_id == req.params.id)){
+        next({
+            status:400,
+            message:"Tweet zaten favori listende bulunuyor"
+        })
+    }else{
+        next()
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+const favoriteRemoveRestriction=async(req,res,next)=>{
+    try {
+    const tweet=await Tweet.getById(req.params.id)
+    if(tweet.favorites[0].favoriteDetails.length===0){
+        next({
+            status:400,
+            message:"Favori listen boş"
+        }) 
+    }else{
+        next()
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,likeRestiriction,retweetRestriction,accountTypeCheck
+    postTweetIsUniqe,likeRestiriction,retweetRestriction,accountTypeCheck,favoriteAddRestriction,favoriteRemoveRestriction
 }

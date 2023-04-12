@@ -157,9 +157,13 @@ const getFavorite = async (tweet_id) => {
   return favoriteSchema;
 };
 
-const postFavorite = async (favoriteIds) => {
+const postFavorite = (favoriteIds) => {
   return db("favorites").insert(favoriteIds);
 };
+
+const deleteFavorite=(favoriteIds)=>{
+  return db("favorites").delete(favoriteIds);
+}
 
 module.exports = {
   getAll,
@@ -177,4 +181,5 @@ module.exports = {
   getFavorites,
   getFavorite,
   postFavorite,
+  deleteFavorite
 };

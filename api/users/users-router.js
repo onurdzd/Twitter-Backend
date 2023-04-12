@@ -91,7 +91,7 @@ router.delete("/:id/follow",mwauth.isValidToken,mwuser.unfollowRestriction,async
   try {
     await Users.removeFollowers({user_id:req.params.id,follower_user_id:req.decodedJWT.user_id})
     await Users.removeFollowing({user_id:req.decodedJWT.user_id,following_user_id:req.params.id})
-    res.status(200).json({message:`${req.params.id} nolu hesabı takip ten çıktın!`})
+    res.status(200).json({message:`${req.params.id} nolu hesabı takipten çıktın!`})
   } catch (error) {
     next(error)
   }

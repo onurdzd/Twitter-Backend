@@ -51,7 +51,7 @@ router.delete("/:id", async (req, res, next) => {
     if (req.decodedJWT.role_id === 1) {
       await Comment.remove(req.params.id);
       res.status(200).json({ message: `${req.params.id} nolu yorum silindi` });
-    } else if (req.decodedJWT.username === commentUser.username) {
+    } else if (req.decodedJWT.username === commentUser[0].username) {
       await Comment.remove(req.params.id);
       res.status(200).json({ message: `${req.params.id} nolu yorum silindi` });
     } else {
