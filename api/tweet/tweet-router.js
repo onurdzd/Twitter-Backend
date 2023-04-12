@@ -76,7 +76,7 @@ router.get("/:id/like",  async (req, res, next) => {
 });
 
 router.post(
-  "/:id/like",
+  "/:id/like",mwtweet.isTweetValid,
   mwtweet.likeRestirictions,
   async (req, res, next) => {
     try {

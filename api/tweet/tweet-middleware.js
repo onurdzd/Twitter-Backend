@@ -20,6 +20,22 @@ const accountTypeCheck=async(req,res,next)=>{
     }
 }
 
+const isTweetValid=(req,res,next)=>{
+    try {
+        const tweet=await Tweet.getById(req.params.id)
+        if(!tweet){
+            next({
+                status: 401,
+                message: `${req.params.id} nolu tweet yoktur`,
+              });
+        }else{
+            next()
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
 const postTweetCheck=(req,res,next)=>{
     try {
         if(!req.body.tweet){
@@ -157,5 +173,5 @@ const favoriteRemoveRestriction=async(req,res,next)=>{
 
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,likeRestirictions,likeRemoveRestriction,retweetRestriction,retweetRemoveRestriction,accountTypeCheck,favoriteAddRestriction,favoriteRemoveRestriction
+    postTweetIsUniqe,isTweetValid,likeRestirictions,likeRemoveRestriction,retweetRestriction,retweetRemoveRestriction,accountTypeCheck,favoriteAddRestriction,favoriteRemoveRestriction
 }
