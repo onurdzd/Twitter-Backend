@@ -14,6 +14,7 @@ const getById = async (comment_id) => {
       "c.comment",
       "t.tweet_id",
       "t.tweet",
+      "u.user_id",
       "u.username",
       "u.role_id"
     )
@@ -31,6 +32,7 @@ const getBy = (filter) => {
       "c.comment",
       "t.tweet_id",
       "t.tweet",
+      "u.user_id",
       "u.username",
       "u.role_id"
     )

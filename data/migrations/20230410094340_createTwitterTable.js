@@ -4,6 +4,10 @@
  */
 exports.up = function (knex) {
   return knex.schema
+    .createTable("account_types", (t) => {
+      t.increments("account_type_id");
+      t.string("account_type_name");
+    })
     .createTable("roles", (t) => {
       t.increments("role_id");
       t.string("role_name");
@@ -19,6 +23,13 @@ exports.up = function (knex) {
         .unsigned()
         .references("role_id")
         .inTable("roles")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
+      t.integer("account_type_id")
+        .notNullable()
+        .unsigned()
+        .references("account_type_id")
+        .inTable("account_types")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
     })
@@ -52,7 +63,7 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     })
     .createTable("likes", (t) => {
-      t.increments("like_id")
+      t.increments("like_id");
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -69,7 +80,24 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     })
     .createTable("retweets", (t) => {
-      t.increments("retweet_id")
+      t.increments("retweet_id");
+      t.integer("tweet_id")
+        .unsigned()
+        .notNullable()
+        .references("tweet_id")
+        .inTable("tweets")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
+      t.integer("user_id")
+        .unsigned()
+        .notNullable()
+        .references("user_id")
+        .inTable("users")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
+    })
+    .createTable("favorites", (t) => {
+      t.increments("favorite_id");
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -93,10 +121,12 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
   return knex.schema
+  .dropTableIfExists("favorites")
     .dropTableIfExists("retweets")
     .dropTableIfExists("likes")
     .dropTableIfExists("comments")
     .dropTableIfExists("tweets")
     .dropTableIfExists("users")
-    .dropTableIfExists("roles");
+    .dropTableIfExists("roles")
+    .dropTableIfExists("account_types");
 };

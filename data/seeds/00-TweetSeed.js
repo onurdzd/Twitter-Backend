@@ -4,18 +4,26 @@
  */
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
+  await knex('account_types').truncate()
   await knex('roles').truncate()
   await knex('users').truncate()
   await knex('tweets').truncate()
   await knex('comments').truncate()
+  await knex('likes').truncate()
+  await knex('retweets').truncate()
+  await knex('favorites').truncate()
 
+  await knex('account_types').insert([
+    {account_type_name:"public"},
+    {account_type_name:"private"}
+  ]);
   await knex('roles').insert([
     {role_name:"admin"},
     {role_name:"user"}
   ]);
   await knex('users').insert([
-    {username: 'onur' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur@onur.com",role_id:1},
-    {username: 'onur2' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur2@onur.com",role_id:2},
+    {username: 'onur' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur@onur.com",role_id:1,account_type_id:1},
+    {username: 'onur2' ,password:"$2b$10$nm/zCjiFeGNgcwa95Wu6RegjkqfJ67lJ/H6Op0eWFzmelkOa043bi",mail:"onur2@onur.com",role_id:2,account_type_id:2},
   ]);
   await knex('tweets').insert([
     {tweet: 'tweet1',user_id:1},
@@ -41,5 +49,10 @@ exports.seed = async function(knex) {
     {user_id: 1,tweet_id:2},
     {user_id: 1,tweet_id:4},
     {user_id: 2,tweet_id:1},
+  ]);
+  await knex('favorites').insert([
+    {user_id: 2,tweet_id:3},
+    {user_id: 1,tweet_id:2},
+    {user_id: 2,tweet_id:4},
   ]);
 };

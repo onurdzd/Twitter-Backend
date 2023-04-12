@@ -1,5 +1,25 @@
 const Tweet=require("./tweet-model")
 
+const accountTypeCheck=async(req,res,next)=>{
+    try {
+        const user=await Tweet.getById(req.params.id)
+        if(user.account_type_name==="public"){
+            next()
+        }else{
+            if(req.decodedJWT.username===user.username || req.decodedJWT.role_name==="admin"){
+                next()
+            }else{
+                next({
+                    status:400,
+                    message:"Account private sadece admin veya hesap sahibi görebilir"
+                })
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
 const postTweetCheck=(req,res,next)=>{
     try {
         if(!req.body.tweet){
@@ -68,5 +88,5 @@ const retweetRestriction=async(req,res,next)=>{
 
 module.exports={
     postTweetCheck,
-    postTweetIsUniqe,likeRestiriction,retweetRestriction
+    postTweetIsUniqe,likeRestiriction,retweetRestriction,accountTypeCheck
 }

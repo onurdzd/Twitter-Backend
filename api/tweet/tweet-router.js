@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id",mwtweet.accountTypeCheck, async (req, res, next) => {
   try {
     const tweet = await Tweet.getById(req.params.id);
     if (tweet.tweet_id) {
@@ -113,6 +113,15 @@ router.post(
     }
   }
 );
+
+router.get("/:id/favorite", mwuser.isValidToken, async (req, res, next) => {
+  try {
+    const favoritedTweet = await Tweet.getFavorite(req.params.id);
+    res.status(200).json(favoritedTweet);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 router.delete("/:id", mwuser.isValidToken, async (req, res, next) => {

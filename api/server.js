@@ -13,7 +13,7 @@ server.use(express.json())
 
 server.use("/api/users",mw.isValidToken,usersRouter)
 server.use("/api/auth",authRouter)
-server.use("/api/tweet",tweetRouter)
+server.use("/api/tweet",mw.isValidToken,tweetRouter)
 server.use("/api/comment",mw.isValidToken,commentRouter)
 
 server.use((err, req, res, next) => { 
