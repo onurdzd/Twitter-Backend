@@ -125,7 +125,7 @@ const retweetRestriction=async(req,res,next)=>{
 
 const retweetRemoveRestriction=async(req,res,next)=>{
     try {
-        const retweet=await Tweet.getRetweetsByUserId(req.params.id)
+        const retweet=await Tweet.getRetweet(req.params.id)
         if(retweet.retweetDetails.every(item=>item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,

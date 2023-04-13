@@ -12,17 +12,9 @@ router.get("/", mwuser.adminYetkisi(1), async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id",mwcomment.isCommentValid, async (req, res, next) => {
   try {
-    const comment = await Comment.getById(req.params.id);
-    if (comment) {
       res.status(200).json(comment);
-    } else {
-      next({
-        status: 401,
-        message: `${req.params.id} nolu yorum henüz yazılmamış!`,
-      });
-    }
   } catch (error) {
     next(error);
   }
@@ -45,7 +37,7 @@ router.post(
   }
 );
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id",mwcomment.isCommentValid, async (req, res, next) => {
   try {
     const commentUser = await Comment.getBy({ comment_id: req.params.id });
     if (req.decodedJWT.role_id === 1) {

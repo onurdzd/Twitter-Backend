@@ -193,5 +193,46 @@ describe("------------ [GET]/[POST] api/tweet/:id/like -------------",()=>{
         const likes=await Tweet.getLike(1)
         expect(likes.likeCount).toEqual(2)
     })
+    test("[22] Kullanıcı farklı kullanıcının like ını kaldıramıyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).delete("/api/tweet/1/like").set({"authorization":logres.body.token})
+        const likes=await Tweet.getLike(1)
+        expect(likes.likeCount).toEqual(2)
+        expect(res.body).toHaveProperty("message","Beğendiğin bir tweet değil")
+    })
+})
+
+describe("------------ [GET]/[POST] api/tweet/:id/retweet -------------",()=>{
+    test("[23] 1 nolu tweet retweet edilebiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        const retweets=await Tweet.getRetweet(1)
+        expect(retweets.retweetCount).toEqual(2)
+    })
+    test("[24] Aynı kullanıcı aynı tweeti 1 den çok kere retweet edemiyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        const res=await request(server).post("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        expect(res.body.message).toMatch(/Tweet i zaten retweet etmişsin/)
+    })
+    test("[25] Kullanıcı retweet kaldırabiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        await request(server).delete("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        const retweet=await Tweet.getRetweet(1)
+        expect(retweet.retweetCount).toEqual(1)
+    })
+    test("[26] Kullanıcı farklı kullanıcının like ını kaldıramıyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        const res=await request(server).delete("/api/tweet/1/retweet").set({"authorization":logres.body.token})
+        const retweet=await Tweet.getRetweet(1)
+        expect(retweet.retweetCount).toEqual(1)
+        expect(res.body).toHaveProperty("message","Retweet ettiğin bir tweet değil")
+    })
 })
 

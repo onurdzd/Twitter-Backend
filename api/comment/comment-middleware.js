@@ -1,5 +1,17 @@
 const Comment=require("./comment-model")
 
+const isCommentValid=async(req,res,next)=>{
+    const comment=await Comment.getById(req.params.id)
+    if(!comment){
+        next({
+            status:401,
+            message:`${req.params.id} nolu yorum bulunmuyor`
+        })
+    }else{
+        next()
+    }
+}
+
 const postCommentCheck=(req,res,next)=>{
     try {
         if(!req.body.comment){
@@ -21,5 +33,5 @@ const postCommentCheck=(req,res,next)=>{
 }
 
 module.exports={
-    postCommentCheck 
+    postCommentCheck ,isCommentValid
 }
