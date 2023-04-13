@@ -1,0 +1,738 @@
+{
+	"info": {
+		"_postman_id": "329eba9c-d3e7-447f-8e18-4a96ecbee928",
+		"name": "Twitter backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25700135"
+	},
+	"item": [
+		{
+			"name": "register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"onur7\" , \"password\":\"12345\" ,\"mail\":\"7@onur.com\" ,\"account_type\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"onur2\" , \"password\":\"12345\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reset Password",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"password\":\"12345\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/auth/resetPassword/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"auth",
+						"resetPassword",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfaWQiOjEsInJvbGVfaWQiOjEsImlhdCI6MTY4MTI4MTg2NiwiZXhwIjoxNjgxNTQxMDY2fQ.NdpkNC5NvqVC_JE1le_U436MGuO9BPm0WGzcWR-1wqI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJyb2xlX2lkIjoxLCJpYXQiOjE2ODEyMjQ2MjQsImV4cCI6MTY4MTQ4MzgyNH0.bx6cCoV0BqviTiLYmB5y73Cpav_26v1JOeGsMaEwsls",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get tweets",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfbmFtZSI6InB1YmxpYyIsInJvbGVfaWQiOjEsInJvbGVfbmFtZSI6ImFkbWluIiwiaWF0IjoxNjgxMzEwOTMxLCJleHAiOjE2ODE1NzAxMzF9.k_Kz3zClPA55vGYsTQhQbKLQysppKG_0VL8QRHo8gFw",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"30"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post tweet",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzQ4NTAsImV4cCI6MTY4MTM5NDA1MH0.IRXJLWuxG-POeRMEA4ASC60GSqcFjez0WETJN5vT6Yg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"tweet\":\"deneme deneme\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete tweet",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get followings",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfbmFtZSI6InB1YmxpYyIsImlhdCI6MTY4MTMwMDkwOCwiZXhwIjoxNjgxNTYwMTA4fQ.09ArzNPBhkYfpbv0xDvir3YZ2trvhr5l-LUBHEXRYNk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/1/followings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"1",
+						"followings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get followers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfbmFtZSI6InB1YmxpYyIsImlhdCI6MTY4MTMwMDkwOCwiZXhwIjoxNjgxNTYwMTA4fQ.09ArzNPBhkYfpbv0xDvir3YZ2trvhr5l-LUBHEXRYNk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/4/followers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"4",
+						"followers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post follow",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfbmFtZSI6InB1YmxpYyIsImlhdCI6MTY4MTMwMDkwOCwiZXhwIjoxNjgxNTYwMTA4fQ.09ArzNPBhkYfpbv0xDvir3YZ2trvhr5l-LUBHEXRYNk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/4/follow",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"4",
+						"follow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete follow",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJhY2NvdW50X3R5cGVfbmFtZSI6InB1YmxpYyIsImlhdCI6MTY4MTMwMDkwOCwiZXhwIjoxNjgxNTYwMTA4fQ.09ArzNPBhkYfpbv0xDvir3YZ2trvhr5l-LUBHEXRYNk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/users/4/follow",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"users",
+						"4",
+						"follow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get comments",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJyb2xlX2lkIjoxLCJpYXQiOjE2ODEyMDc1MDQsImV4cCI6MTY4MTQ2NjcwNH0.rvSaCCCPF8Ivxkg3TMZmARuiYq1yogBiEHZKf7TqLj0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/comment/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"comment",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"comment\":\"ilk yorum6\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/comment/tweet/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"comment",
+						"tweet",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete comment",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIyIiwidXNlcl9pZCI6MiwiYWNjb3VudF90eXBlX25hbWUiOiJwcml2YXRlIiwicm9sZV9pZCI6Miwicm9sZV9uYW1lIjoidXNlciIsImlhdCI6MTY4MTM3NTk1OSwiZXhwIjoxNjgxNjM1MTU5fQ.04Apu0FOvSZ4vbtpYr37Fa38g0lbeiIkBIRE13Jmehk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/comment/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"comment",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get favorite",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/2/favorite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"2",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post favorite",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/2/favorite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"2",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete favorite",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/2/favorite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"2",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get like",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIzIiwidXNlcl9pZCI6MywiYWNjb3VudF90eXBlX25hbWUiOiJwdWJsaWMiLCJyb2xlX2lkIjoyLCJyb2xlX25hbWUiOiJ1c2VyIiwiaWF0IjoxNjgxMzcxNjg5LCJleHAiOjE2ODE2MzA4ODl9.L58J2wkuFwau536Uxx6OYp6L1QenexP-nTmgwy6FAo8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/like",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post like",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIzIiwidXNlcl9pZCI6MywiYWNjb3VudF90eXBlX25hbWUiOiJwdWJsaWMiLCJyb2xlX2lkIjoyLCJyb2xlX25hbWUiOiJ1c2VyIiwiaWF0IjoxNjgxMzcxNjg5LCJleHAiOjE2ODE2MzA4ODl9.L58J2wkuFwau536Uxx6OYp6L1QenexP-nTmgwy6FAo8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/like",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete like",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIzIiwidXNlcl9pZCI6MywiYWNjb3VudF90eXBlX25hbWUiOiJwdWJsaWMiLCJyb2xlX2lkIjoyLCJyb2xlX25hbWUiOiJ1c2VyIiwiaWF0IjoxNjgxMzcxNjg5LCJleHAiOjE2ODE2MzA4ODl9.L58J2wkuFwau536Uxx6OYp6L1QenexP-nTmgwy6FAo8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/like",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get retweet",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/retweet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"retweet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post retweet",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/retweet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"retweet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete retweet",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9udXIiLCJ1c2VyX2lkIjoxLCJpYXQiOjE2ODExMzE1NzksImV4cCI6MTY4MTM5MDc3OX0.ycPXozn4LebTyJjwMDw2J1Tv586V5fp-qgOW3ssmM8A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/api/tweet/1/retweet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"tweet",
+						"1",
+						"retweet"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

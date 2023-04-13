@@ -1,5 +1,3 @@
-const User=require("../users/users-model")
-const Tweet=require("../tweet/tweet-model")
 const Comment=require("./comment-model")
 const db=require("../../data/dbconfig")
 
@@ -12,10 +10,6 @@ beforeEach(async ()=> {
     await db.seed.run();
 })
 
-test("environment ayarı testing olarak ayarlandı",()=>{
-    expect(process.env.NODE_ENV).toBe("testing")
-})
-
 let newComment={comment:"Test comment",user_id:"3",tweet_id:"2"}
 
 describe("--------getAll-------",()=>{
@@ -23,7 +17,7 @@ describe("--------getAll-------",()=>{
     beforeEach(async ()=> {
         comments=await Comment.getAll()
     })
-    test("[1] tüm projereler gösteriliyor",()=>{
+    test("[1] tüm yorumlar gösteriliyor",()=>{
         expect(comments).toHaveLength(7)
     })
 })

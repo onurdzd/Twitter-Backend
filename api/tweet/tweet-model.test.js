@@ -1,6 +1,4 @@
-const User=require("../users/users-model")
-const Tweet=require("../tweet/tweet-model")
-const Comment=require("./comment-model")
+const Tweet=require("./tweet-model")
 const db=require("../../data/dbconfig")
 
 beforeAll(async ()=> {
@@ -12,77 +10,180 @@ beforeEach(async ()=> {
     await db.seed.run();
 })
 
-test("environment ayarı testing olarak ayarlandı",()=>{
-    expect(process.env.NODE_ENV).toBe("testing")
-})
-
-let newComment={comment:"Test comment",user_id:"3",tweet_id:"2"}
+let newTweet={tweet:"Test tweet",user_id:"3"}
+let newLike={user_id:1,tweet_id:2}
+let newRetweet={user_id:1,tweet_id:2}
+let newFavorite={user_id:1,tweet_id:3}
 
 describe("--------getAll-------",()=>{
-    let comments;
+    let tweets;
     beforeEach(async ()=> {
-        comments=await Comment.getAll()
+        tweets=await Tweet.getAll()
     })
     test("[1] tüm projereler gösteriliyor",()=>{
-        expect(comments).toHaveLength(7)
+        expect(tweets).toHaveLength(4)
     })
 })
 
 describe("--------getById-------",()=>{
-    let comment;
+    let tweet;
     beforeEach(async ()=> {
-        comment=await Comment.getById(1)
+        tweet=await Tweet.getById(1)
     })
-    test("[2] 1 nolu yorumun yorum id si gösteriliyor",()=>{
-        expect(comment).toHaveProperty("comment_id",1)
+    test("[2] 1 nolu tweetin tweet id si gösteriliyor",()=>{
+        expect(tweet).toHaveProperty("tweet_id",1)
     })
-    test("[3] 1 nolu yorum gösteriliyor",()=>{
-        expect(comment).toHaveProperty("comment",comment.comment)
+    test("[3] 1 nolu tweet gösteriliyor",()=>{
+        expect(tweet).toHaveProperty("tweet",tweet.tweet)
     })
 })
 
 describe("--------getBy-------",()=>{
-    let comment;
+    let tweet;
     beforeEach(async ()=> {
-        comment=await Comment.getBy({"comment_id":1})
+        tweet=await Tweet.getBy({"tweet_id":1})
     })
-    test("[4] 1 nolu yorum filtrelenebiliyor",()=>{
-        expect(comment[0]).toHaveProperty("comment",comment[0].comment)
+    test("[4] 1 nolu tweet filtrelenebiliyor",()=>{
+        expect(tweet[0]).toHaveProperty("tweet",tweet[0].tweet)
     })
 })
 
 describe("--------add-------",()=>{
-    let comments;
-    let comment;
+    let tweets;
+    let tweet;
     beforeEach(async ()=> {
-        comments=await Comment.getAll()
-        await Comment.add(newComment)
-        comment=await Comment.getById(8)
+        tweets=await Tweet.getAll()
+        await Tweet.add(newTweet)
+        tweet=await Tweet.getById(5)
     })
-    test("[5] yeni yorum eklenebiliyor",()=>{
-        expect(comments).toHaveLength(comments.length)
+    test("[5] yeni tweet eklenebiliyor",()=>{
+        expect(tweets).toHaveLength(tweets.length)
     })
-    test("[6] yeni yorum düzgün ekleniyor",()=>{
-        expect(comment).toHaveProperty("comment",comment.comment)
+    test("[6] yeni tweet düzgün ekleniyor",()=>{
+        expect(tweet).toHaveProperty("tweet",tweet.tweet)
     })
 })
 
 describe("--------remove-------",()=>{
-    let comments;
-    let comment;
-    let unDeletedComment;
+    let tweets;
+    let tweet;
+    let unDeletedTweet;
     beforeEach(async ()=> {
-        await Comment.add(newComment)
-        await Comment.remove(8)
-        comments=await Comment.getAll()
-        comment=await Comment.getById(8)
-        unDeletedComment=await Comment.getById(8)
+        await Tweet.add(newTweet)
+        await Tweet.remove(5)
+        tweets=await Tweet.getAll()
+        tweet=await Tweet.getById(5)
+        unDeletedTweet=await Tweet.getById(8)
     })
-    test("[7] Kendi yorumunu silebiliyor",()=>{
-        expect(comments).toHaveLength(7)
-        expect(comment).toBeUndefined()
+    test("[7] Kendi tweetini silebiliyor",()=>{
+        expect(tweets).toHaveLength(4)
+        expect(tweet).toEqual([])
     })
-    test("[8] olmayan yorum doğru dönüyor",()=>{
-        expect(unDeletedComment).toBeUndefined()
+    test("[8] olmayan tweet doğru dönüyor",()=>{
+        expect(unDeletedTweet).toEqual([])
+    })
+})
+
+describe("--------getLikes-------",()=>{
+    let likes;
+    beforeEach(async ()=> {
+        likes=await Tweet.getLikes(1)
+    })
+    test("[9] 1 nolu user e ait like lar döndürülüyor",()=>{
+        expect(likes).toHaveLength(2)
+    })
+})
+
+describe("--------getLike-------",()=>{
+    let likes;
+    beforeEach(async ()=> {
+        likes=await Tweet.getLike(1)
+    })
+    test("[10] 1 nolu tweet e ait like lar döndürülüyor",()=>{
+        expect(likes.likeCount).toEqual(2)
+    })
+})
+
+describe("--------postLike-------",()=>{
+    let likes;
+    beforeEach(async ()=> {
+        await Tweet.postLike(newLike)
+        likes=await Tweet.getLikes(1)
+    })
+    test("[11] user1 like attıktan sonra 1 nolu user e ait like lar döndürülüyor",()=>{
+        expect(likes).toHaveLength(3)
+    })
+})
+
+describe("--------deleteLike-------",()=>{
+    let likes;
+    beforeEach(async ()=> {
+        await Tweet.deleteLike({user_id:1,tweet_id:2})
+        likes=await Tweet.getLikes(1)
+    })
+    test("[12] user1 like sildikten sonra 1 nolu user e ait like lar döndürülüyor",()=>{
+        expect(likes).toHaveLength(1)
+    })
+})
+
+describe("--------getRetweets-------",()=>{
+    let retweets;
+    beforeEach(async ()=> {
+        retweets=await Tweet.getRetweetsByUserId(1)
+    })
+    test("[13] 1 nolu user e ait retweet ler döndürülüyor",()=>{
+        expect(retweets).toHaveLength(2)
+    })
+})
+describe("--------postRetweets-------",()=>{
+    let retweets;
+    beforeEach(async ()=> {
+        await Tweet.postRetweet(newRetweet)
+        retweets=await Tweet.getRetweetsByUserId(1)
+    })
+    test("[141] user1 retweet attıktan sonra 1 nolu user e ait retweet ler döndürülüyor",()=>{
+        expect(retweets).toHaveLength(3)
+    })
+})
+
+describe("--------deleteRetweets-------",()=>{
+    let retweets;
+    beforeEach(async ()=> {
+        await Tweet.deleteRetweet({user_id:1,tweet_id:2})
+        retweets=await Tweet.getRetweetsByUserId(1)
+    })
+    test("[15] user1 retweet sildikten sonra 1 nolu user e ait retweet lar döndürülüyor",()=>{
+        expect(retweets).toHaveLength(1)
+    })
+})
+
+describe("--------getFavorites-------",()=>{
+    let favorites;
+    beforeEach(async ()=> {
+        favorites=await Tweet.getFavorites(1)
+    })
+    test("[13] 1 nolu user e ait favoriler döndürülüyor",()=>{
+        expect(favorites).toHaveLength(1)
+    })
+})
+describe("--------postFavorites-------",()=>{
+    let favorites;
+    beforeEach(async ()=> {
+        await Tweet.postFavorite(newFavorite)
+        favorites=await Tweet.getFavorites(1)
+    })
+    test("[141] user1 favoriye aldıktan sonra user1 e ait favoriler döndürülüyor",()=>{
+        expect(favorites).toHaveLength(2)
+    })
+})
+
+describe("--------deleteFavorites-------",()=>{
+    let favorites;
+    beforeEach(async ()=> {
+        await Tweet.deleteFavorite({user_id:1,tweet_id:2})
+        favorites=await Tweet.getFavorites(1)
+    })
+    test("[15] user1 favori sildikten sonra user1 e ait favoriler döndürülüyor",()=>{
+        expect(favorites).toHaveLength(0)
     })
 })
