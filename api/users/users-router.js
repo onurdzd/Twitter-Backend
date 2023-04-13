@@ -5,7 +5,7 @@ const mwuser=require("./users-middleware")
 
 router.get("/", mwauth.adminYetkisi(1), async (req, res, next) => {
   try {
-    const users = await Users.getUsers();
+    const users = await Users.getAll();
     res.status(201).json(users);
   } catch (error) {
     next(error);

@@ -84,20 +84,20 @@ describe("--------remove-------",()=>{
     })
 })
 
-describe("--------getLikes-------",()=>{
+describe("--------getLikeByUser-------",()=>{
     let likes;
     beforeEach(async ()=> {
-        likes=await Tweet.getLikes(1)
+        likes=await Tweet.getLikeByUser(1)
     })
     test("[9] 1 nolu user e ait like lar döndürülüyor",()=>{
         expect(likes).toHaveLength(2)
     })
 })
 
-describe("--------getLike-------",()=>{
+describe("--------getLikeByTweet-------",()=>{
     let likes;
     beforeEach(async ()=> {
-        likes=await Tweet.getLike(1)
+        likes=await Tweet.getLikeByTweet(1)
     })
     test("[10] 1 nolu tweet e ait like lar döndürülüyor",()=>{
         expect(likes.likeCount).toEqual(2)
@@ -108,7 +108,7 @@ describe("--------postLike-------",()=>{
     let likes;
     beforeEach(async ()=> {
         await Tweet.postLike(newLike)
-        likes=await Tweet.getLikes(1)
+        likes=await Tweet.getLikeByUser(1)
     })
     test("[11] user1 like attıktan sonra 1 nolu user e ait like lar döndürülüyor",()=>{
         expect(likes).toHaveLength(3)
@@ -119,17 +119,17 @@ describe("--------deleteLike-------",()=>{
     let likes;
     beforeEach(async ()=> {
         await Tweet.deleteLike({user_id:1,tweet_id:2})
-        likes=await Tweet.getLikes(1)
+        likes=await Tweet.getLikeByUser(1)
     })
     test("[12] user1 like sildikten sonra 1 nolu user e ait like lar döndürülüyor",()=>{
         expect(likes).toHaveLength(1)
     })
 })
 
-describe("--------getRetweets-------",()=>{
+describe("--------getRetweetByTweets-------",()=>{
     let retweets;
     beforeEach(async ()=> {
-        retweets=await Tweet.getRetweetsByUserId(1)
+        retweets=await Tweet.getRetweetByUser(1)
     })
     test("[13] 1 nolu user e ait retweet ler döndürülüyor",()=>{
         expect(retweets).toHaveLength(2)
@@ -139,7 +139,7 @@ describe("--------postRetweets-------",()=>{
     let retweets;
     beforeEach(async ()=> {
         await Tweet.postRetweet(newRetweet)
-        retweets=await Tweet.getRetweetsByUserId(1)
+        retweets=await Tweet.getRetweetByUser(1)
     })
     test("[141] user1 retweet attıktan sonra 1 nolu user e ait retweet ler döndürülüyor",()=>{
         expect(retweets).toHaveLength(3)
@@ -150,17 +150,17 @@ describe("--------deleteRetweets-------",()=>{
     let retweets;
     beforeEach(async ()=> {
         await Tweet.deleteRetweet({user_id:1,tweet_id:2})
-        retweets=await Tweet.getRetweetsByUserId(1)
+        retweets=await Tweet.getRetweetByUser(1)
     })
     test("[15] user1 retweet sildikten sonra 1 nolu user e ait retweet lar döndürülüyor",()=>{
         expect(retweets).toHaveLength(1)
     })
 })
 
-describe("--------getFavorites-------",()=>{
+describe("--------getFavoriteByUser-------",()=>{
     let favorites;
     beforeEach(async ()=> {
-        favorites=await Tweet.getFavorites(1)
+        favorites=await Tweet.getFavoriteByUser(1)
     })
     test("[13] 1 nolu user e ait favoriler döndürülüyor",()=>{
         expect(favorites).toHaveLength(1)
@@ -170,7 +170,7 @@ describe("--------postFavorites-------",()=>{
     let favorites;
     beforeEach(async ()=> {
         await Tweet.postFavorite(newFavorite)
-        favorites=await Tweet.getFavorites(1)
+        favorites=await Tweet.getFavoriteByUser(1)
     })
     test("[141] user1 favoriye aldıktan sonra user1 e ait favoriler döndürülüyor",()=>{
         expect(favorites).toHaveLength(2)
@@ -181,7 +181,7 @@ describe("--------deleteFavorites-------",()=>{
     let favorites;
     beforeEach(async ()=> {
         await Tweet.deleteFavorite({user_id:1,tweet_id:2})
-        favorites=await Tweet.getFavorites(1)
+        favorites=await Tweet.getFavoriteByUser(1)
     })
     test("[15] user1 favori sildikten sonra user1 e ait favoriler döndürülüyor",()=>{
         expect(favorites).toHaveLength(0)

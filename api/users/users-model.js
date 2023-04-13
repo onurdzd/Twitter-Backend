@@ -2,7 +2,7 @@ const db = require("../../data/dbconfig");
 const Tweet = require("../tweet/tweet-model");
 const Comment = require("../comment/comment-model");
 
-const getUsers = () => {
+const getAll = () => {
   return db("users as u") .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id").leftJoin("roles as r","u.role_id","r.role_id")
 };
 
@@ -38,9 +38,9 @@ const getById = async (user_id) => {
 
   const tweets = await Tweet.getBy({ "t.user_id": user_id });
   const comments = await Comment.getBy({ "c.user_id": user_id });
-  const retweets = await Tweet.getRetweetsByUserId(user_id);
-  const likes = await Tweet.getLikes(user_id);
-  const favorites = await Tweet.getFavorites(user_id);
+  const retweets = await Tweet.getRetweetByUser(user_id);
+  const likes = await Tweet.getLikeByUser(user_id);
+  const favorites = await Tweet.getFavoriteByUser(user_id);
   const followings = await getFollowingsByUser(user_id);
   const followers = await getFollowersByUser(user_id);
 
@@ -98,7 +98,7 @@ const removeFollowers = (filter) => {
 };
 
 module.exports = {
-  getUsers,
+  getAll,
   getBy,
   add,
   change,

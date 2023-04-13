@@ -93,7 +93,7 @@ const likeRestirictions=async(req,res,next)=>{
 
 const likeRemoveRestriction=async(req,res,next)=>{
     try {
-    const like=await Tweet.getLike(req.params.id)
+    const like=await Tweet.getLikeByTweet(req.params.id)
     if(like.likeDetails.every(item=>item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,
@@ -125,7 +125,7 @@ const retweetRestriction=async(req,res,next)=>{
 
 const retweetRemoveRestriction=async(req,res,next)=>{
     try {
-        const retweet=await Tweet.getRetweet(req.params.id)
+        const retweet=await Tweet.getRetweetByTweet(req.params.id)
         if(retweet.retweetDetails.every(item=>item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,
