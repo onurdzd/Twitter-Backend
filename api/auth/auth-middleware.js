@@ -2,7 +2,7 @@ const Users = require("../users/users-model");
 const yup = require("yup");
 const jwt=require("jsonwebtoken")
 
-const stepSchema = yup.object().shape({
+const registerSchema = yup.object().shape({
   username: yup
     .string("Hatalı username formatı")
     .min(4, "Username en az 4 karakter olmalı")
@@ -19,7 +19,7 @@ const stepSchema = yup.object().shape({
     .required("Mail gereklidir"),
 });
 
-const stepSchema2 = yup.object().shape({
+const loginSchema = yup.object().shape({
   password: yup
     .string("Hatalı password formatı")
     .min(5, "Şifre en az 5 karakter olmalı")
@@ -34,7 +34,7 @@ const stepSchema2 = yup.object().shape({
 
 const registerPostDataIsValid = async (req, res, next) => {
   try {
-    const yupCheck = await stepSchema.validate(req.body);
+    const yupCheck = await registerSchema.validate(req.body);
     if (!yupCheck) {
       next({ status: 400, message: "Girilen bilgiler hatalı" });
     } else {
@@ -47,7 +47,7 @@ const registerPostDataIsValid = async (req, res, next) => {
 
 const registerUsernameMailIsValid = async (req, res, next) => {
   try {
-    const username = await Users.getBy({ username: req.body.username });
+    const username = await Users.getBy({ username: req.body.username.trim() });
     const mail = await Users.getBy({ mail: req.body.mail });
     if (username[0]) {
       res.status(400).json({ message: "Username zaten kullanılıyor" });
@@ -63,7 +63,7 @@ const registerUsernameMailIsValid = async (req, res, next) => {
 
 const loginPostDataIsValid = async (req, res, next) => {
   try {
-    const yupCheck = await stepSchema2.validate(req.body);
+    const yupCheck = await loginSchema.validate(req.body);
     if (!yupCheck) {
       next({ status: 400, message: "Girilen bilgiler hatalı" });
     } else {
@@ -76,7 +76,7 @@ const loginPostDataIsValid = async (req, res, next) => {
 
 const loginUsernameMailIsValid = async (req, res, next) => {
   try {
-    const username = await Users.getBy({username:req.body.username});
+    const username = await Users.getBy({username:req.body.username.trim()});
     if (!username[0]) {
       res.status(400).json({ message: "Username sistemde mevcut değil" });
     }else {
@@ -85,15 +85,15 @@ const loginUsernameMailIsValid = async (req, res, next) => {
   } catch (error) {}
 };
 
-const resetUsernameVarmı =(req,res,next)=>{
+const resetPasswordPayloadCheck =(req,res,next)=>{
 try {
-  if(!req.res.password){
+  if(!req.body.password){
     next({status:400,message:"Yeni şifreni girmelisin"})
   }else{
     next()
   }
 } catch (error) {
-  
+ next(error) 
 }
 }
 
@@ -123,7 +123,7 @@ const isValidToken=(req,res,next)=>{
 
 const idIsValid=(req,res,next)=>{
   try {
-    if(req.decodedJWT.user_id === req.params.id){
+    if(req.decodedJWT.user_id == req.params.id){
       next()
     }else{
       next({
@@ -156,7 +156,7 @@ module.exports = {
   registerUsernameMailIsValid,
   loginPostDataIsValid,
   loginUsernameMailIsValid,
-  resetUsernameVarmı,
+  resetPasswordPayloadCheck,
   isValidToken,
   adminYetkisi,
   idIsValid,
