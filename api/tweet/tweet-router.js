@@ -59,7 +59,7 @@ router.delete("/:id",  async (req, res, next) => {
   }
 });
 
-router.get("/:id/like",  async (req, res, next) => {
+router.get("/:id/like",mwtweet.isTweetValid,  async (req, res, next) => {
   try {
     const likedTweet = await Tweet.getLike(req.params.id);
     res.status(200).json(likedTweet);
@@ -96,7 +96,7 @@ router.delete("/:id/like",mwtweet.isTweetValid,mwtweet.likeRemoveRestriction,asy
   }
 })
 
-router.get("/:id/retweet",  async (req, res, next) => {
+router.get("/:id/retweet",mwtweet.isTweetValid,  async (req, res, next) => {
   try {
     const retweetedTweet = await Tweet.getRetweet(req.params.id);
     res.status(200).json(retweetedTweet);
@@ -134,7 +134,7 @@ router.delete("/:id/retweet",mwtweet.isTweetValid,mwtweet.retweetRemoveRestricti
   }
 })
 
-router.get("/:id/favorite",  async (req, res, next) => {
+router.get("/:id/favorite",mwtweet.isTweetValid,  async (req, res, next) => {
   try {
     const favoritedTweet = await Tweet.getFavorite(req.params.id);
     res.status(200).json(favoritedTweet);
