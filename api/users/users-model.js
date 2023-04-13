@@ -3,11 +3,7 @@ const Tweet = require("../tweet/tweet-model");
 const Comment = require("../comment/comment-model");
 
 const getUsers = () => {
-  return db("users as u").leftJoin(
-    "account_types as a",
-    "a.account_type_id",
-    "u.account_type_id"
-  );
+  return db("users as u") .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id").leftJoin("roles as r","u.role_id","r.role_id")
 };
 
 const getBy = (filter) => {
@@ -18,7 +14,7 @@ const getBy = (filter) => {
 
 const getById = async (user_id) => {
   const user = await db("users as u")
-    .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id")
+  .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id").leftJoin("roles as r","u.role_id","r.role_id")
     .where("u.user_id", user_id)
     .first();
 
@@ -30,6 +26,7 @@ const getById = async (user_id) => {
     user_id: user.user_id,
     username: user.username,
     account_type: user.account_type_name,
+    created_at:user.created_at,
     tweets: [],
     followings: [],
     followers: [],

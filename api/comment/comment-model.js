@@ -12,6 +12,7 @@ const getById = async (comment_id) => {
     .select(
       "c.comment_id",
       "c.comment",
+      "c.created_at",
       "t.tweet_id",
       "t.tweet",
       "u.user_id",
@@ -29,6 +30,7 @@ const getBy = (filter) => {
     .leftJoin("users as u", "u.user_id", "c.user_id")
     .select(
       "c.comment_id",
+      "c.created_at",
       "c.comment",
       "t.tweet_id",
       "t.tweet",

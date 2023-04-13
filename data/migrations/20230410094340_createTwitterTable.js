@@ -14,6 +14,7 @@ exports.up = function (knex) {
     })
     .createTable("users", (t) => {
       t.increments("user_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.string("username", 20).unique().notNullable();
       t.string("password", 120).notNullable();
       t.string("mail", 30).unique().notNullable();
@@ -34,6 +35,7 @@ exports.up = function (knex) {
     })
     .createTable("tweets", (t) => {
       t.increments("tweet_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.string("tweet", 120).unique().notNullable();
       t.integer("user_id")
         .unsigned()
@@ -45,6 +47,7 @@ exports.up = function (knex) {
     })
     .createTable("comments", (t) => {
       t.increments("comment_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.string("comment", 65).notNullable();
       t.integer("tweet_id")
         .unsigned()
@@ -63,6 +66,7 @@ exports.up = function (knex) {
     })
     .createTable("likes", (t) => {
       t.increments("like_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -80,6 +84,7 @@ exports.up = function (knex) {
     })
     .createTable("retweets", (t) => {
       t.increments("retweet_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -97,6 +102,7 @@ exports.up = function (knex) {
     })
     .createTable("favorites", (t) => {
       t.increments("favorite_id");
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.integer("tweet_id")
         .unsigned()
         .notNullable()
@@ -113,6 +119,7 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
     }).createTable("followers",t=>{
       t.increments("follower_id")
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.integer("follower_user_id").notNullable().unsigned()
       t.integer("user_id")
       .unsigned()
@@ -123,6 +130,7 @@ exports.up = function (knex) {
       .onDelete("CASCADE");
     }).createTable("followings",t=>{
       t.increments("follower_id")
+      t.timestamp('created_at').defaultTo(knex.fn.now())
       t.integer("following_user_id").notNullable().unsigned()
       t.integer("user_id")
       .unsigned()

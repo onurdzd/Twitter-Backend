@@ -8,6 +8,7 @@ const getAll = async () => {
     .select(
       "t.tweet_id",
       "t.tweet",
+      "t.created_at",
       "u.user_id",
       "u.username",
       "a.account_type_name"
@@ -19,9 +20,11 @@ const getBy = (filter) => {
   return db("tweets as t")
     .leftJoin("users as u", "t.user_id", "u.user_id")
     .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id")
+    .leftJoin("roles as r", "u.role_id", "r.role_id")
     .select(
       "t.tweet_id",
       "t.tweet",
+      "t.created_at",
       "u.user_id",
       "u.username",
       "a.account_type_name"
@@ -33,6 +36,7 @@ const getById = async (tweet_id) => {
   const tweet = await db("tweets as t")
     .leftJoin("users as u", "t.user_id", "u.user_id")
     .leftJoin("account_types as a", "a.account_type_id", "u.account_type_id")
+    .leftJoin("roles as r", "u.role_id", "r.role_id")
     .where("t.tweet_id", tweet_id);
   if (!tweet || tweet.length === 0) {
     return [];
@@ -41,7 +45,8 @@ const getById = async (tweet_id) => {
   let tweetSchema = {
     tweet_id: tweet[0].tweet_id,
     tweet: tweet[0].tweet,
-    user_id:tweet[0].user_id,
+    created_at: tweet[0].created_at,
+    user_id: tweet[0].user_id,
     username: tweet[0].username,
     account_type_name: tweet[0].account_type_name,
     comments: [],
@@ -79,19 +84,34 @@ const remove = (tweet_id) => {
 };
 
 const getLikes = async (user_id) => {
-  const likes = await db("likes as r")
-    .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
-    .leftJoin("users as u", "u.user_id", "r.user_id")
-    .select("r.like_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username").where("u.user_id",user_id);
+  const likes = await db("likes as l")
+    .leftJoin("tweets as t", "t.tweet_id", "l.tweet_id")
+    .leftJoin("users as u", "u.user_id", "l.user_id")
+    .select(
+      "l.like_id",
+      "l.created_at",
+      "t.tweet_id",
+      "t.tweet",
+      "u.user_id",
+      "u.username"
+    )
+    .where("u.user_id", user_id);
   return likes;
 };
 
 const getLike = async (tweet_id) => {
-  const likes = await db("likes as r")
-    .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
-    .leftJoin("users as u", "u.user_id", "r.user_id")
-    .select("r.like_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username")
-    .where("r.tweet_id", tweet_id);
+  const likes = await db("likes as l")
+    .leftJoin("tweets as t", "t.tweet_id", "l.tweet_id")
+    .leftJoin("users as u", "u.user_id", "l.user_id")
+    .select(
+      "l.like_id",
+      "l.created_at",
+      "t.tweet_id",
+      "t.tweet",
+      "u.user_id",
+      "u.username"
+    )
+    .where("l.tweet_id", tweet_id);
 
   const likeSchema = {
     likeDetails: likes,
@@ -104,15 +124,23 @@ const postLike = (likeids) => {
   return db("likes").insert(likeids);
 };
 
-const deleteLike=(likeids)=>{
+const deleteLike = (likeids) => {
   return db("likes").delete(likeids);
-}
+};
 
 const getRetweetsByUserId = async (user_id) => {
   const retweets = await db("retweets as r")
     .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
     .leftJoin("users as u", "u.user_id", "r.user_id")
-    .select("r.retweet_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username").where("u.user_id",user_id);
+    .select(
+      "r.retweet_id",
+      "r.created_at",
+      "t.tweet_id",
+      "t.tweet",
+      "u.user_id",
+      "u.username"
+    )
+    .where("u.user_id", user_id);
   return retweets;
 };
 
@@ -120,7 +148,14 @@ const getRetweet = async (tweet_id) => {
   const retweet = await db("retweets as r")
     .leftJoin("tweets as t", "t.tweet_id", "r.tweet_id")
     .leftJoin("users as u", "u.user_id", "r.user_id")
-    .select("r.retweet_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username")
+    .select(
+      "r.retweet_id",
+      "r.created_at",
+      "t.tweet_id",
+      "t.tweet",
+      "u.user_id",
+      "u.username"
+    )
     .where("r.tweet_id", tweet_id);
 
   const retweetSchema = {
@@ -134,9 +169,9 @@ const postRetweet = async (retweetIds) => {
   return db("retweets").insert(retweetIds);
 };
 
-const deleteRetweet=(retweetids)=>{
+const deleteRetweet = (retweetids) => {
   return db("retweets").delete(retweetids);
-}
+};
 
 const getFavorites = async (user_id) => {
   const favorites = await db("favorites as f")
@@ -144,18 +179,27 @@ const getFavorites = async (user_id) => {
     .leftJoin("users as u", "u.user_id", "f.user_id")
     .select(
       "f.favorite_id",
+      "f.created_at",
       "t.tweet_id",
       "t.tweet",
       "u.user_id",
       "u.username"
-    ).where("u.user_id",user_id);
+    )
+    .where("u.user_id", user_id);
   return favorites;
 };
 const getFavorite = async (tweet_id) => {
   const favorite = await db("favorites as f")
     .leftJoin("tweets as t", "t.tweet_id", "f.tweet_id")
     .leftJoin("users as u", "u.user_id", "f.user_id")
-    .select("f.favorite_id", "t.tweet_id", "t.tweet", "u.user_id", "u.username")
+    .select(
+      "f.favorite_id",
+      "f.created_at",
+      "t.tweet_id",
+      "t.tweet",
+      "u.user_id",
+      "u.username"
+    )
     .where("f.tweet_id", tweet_id);
 
   const favoriteSchema = {
@@ -169,9 +213,9 @@ const postFavorite = (favoriteIds) => {
   return db("favorites").insert(favoriteIds);
 };
 
-const deleteFavorite=(favoriteIds)=>{
+const deleteFavorite = (favoriteIds) => {
   return db("favorites").delete(favoriteIds);
-}
+};
 
 module.exports = {
   getAll,
@@ -191,5 +235,5 @@ module.exports = {
   getFavorites,
   getFavorite,
   postFavorite,
-  deleteFavorite
+  deleteFavorite,
 };
