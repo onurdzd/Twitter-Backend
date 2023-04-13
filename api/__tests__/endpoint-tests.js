@@ -174,8 +174,9 @@ describe("------------ [GET]/[POST] api/tweet/:id/like -------------",()=>{
     test("[19] 1 nolu tweet beğenilebiliyor",async ()=>{
         await request(server).post("/api/auth/register").send(newUser)
         const logres=await request(server).post("/api/auth/login").send(loginInfo)
-        const res=await request(server).post("/api/tweet/1/like").set({"authorization":logres.body.token})
-        expect(res.body).toEqual(2)
+        await request(server).post("/api/tweet/1/like").set({"authorization":logres.body.token})
+        const likes=await Tweet.getLike(1)
+        expect(likes.likeCount).toEqual(3)
     })
     test("[20] Aynı kullanıcı aynı tweete 1 den çok kere like atamıyor",async ()=>{
         await request(server).post("/api/auth/register").send(newUser)
@@ -183,6 +184,14 @@ describe("------------ [GET]/[POST] api/tweet/:id/like -------------",()=>{
         await request(server).post("/api/tweet/1/like").set({"authorization":logres.body.token})
         const res=await request(server).post("/api/tweet/1/like").set({"authorization":logres.body.token})
         expect(res.body.message).toMatch(/zaten beğeni listende bulunuyor/)
+    })
+    test("[21] Kullanıcı like kaldırabiliyor",async ()=>{
+        await request(server).post("/api/auth/register").send(newUser)
+        const logres=await request(server).post("/api/auth/login").send(loginInfo)
+        await request(server).post("/api/tweet/1/like").set({"authorization":logres.body.token})
+        await request(server).delete("/api/tweet/1/like").set({"authorization":logres.body.token})
+        const likes=await Tweet.getLike(1)
+        expect(likes.likeCount).toEqual(2)
     })
 })
 

@@ -78,7 +78,7 @@ const likeRestirictions=async(req,res,next)=>{
             status:400,
             message:"Kendi tweetine like atamazsın"
         })
-    }else if(tweet.likes[0].likeDetails.some(item=> item.tweet_id == req.params.id)){
+    }else if(tweet.likes[0].likeDetails.some(item=> item.user_id == req.decodedJWT.user_id)){
         next({
             status:400,
             message:"Tweet zaten beğeni listende bulunuyor"
@@ -93,8 +93,8 @@ const likeRestirictions=async(req,res,next)=>{
 
 const likeRemoveRestriction=async(req,res,next)=>{
     try {
-    const tweet=await Tweet.getById(req.params.id)
-    if(tweet.likes[0].likeDetails.length===0){
+    const like=await Tweet.getLike(req.params.id)
+    if(like.likeDetails.every(item=>item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,
             message:"Beğendiğin bir tweet değil"
@@ -110,7 +110,7 @@ const likeRemoveRestriction=async(req,res,next)=>{
 const retweetRestriction=async(req,res,next)=>{
     try {
         const tweet=await Tweet.getById(req.params.id)
-        if(tweet.retweets[0].retweetDetails.some(item=> item.tweet_id == req.params.id)){
+        if(tweet.retweets[0].retweetDetails.some(item=> item.user_id == req.decodedJWT.user_id)){
             next({
                 status:400,
                 message:"Tweet i zaten retweet etmişsin"
@@ -125,8 +125,8 @@ const retweetRestriction=async(req,res,next)=>{
 
 const retweetRemoveRestriction=async(req,res,next)=>{
     try {
-    const tweet=await Tweet.getById(req.params.id)
-    if(tweet.retweets[0].retweetDetails.length===0){
+        const retweet=await Tweet.getRetweetsByUserId(req.params.id)
+        if(retweet.retweetDetails.every(item=>item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,
             message:"Retweet ettiğin bir tweet değil"
@@ -142,7 +142,7 @@ const retweetRemoveRestriction=async(req,res,next)=>{
 const favoriteAddRestriction=async(req,res,next)=>{
     try {
     const tweet=await Tweet.getById(req.params.id)
-    if(tweet.favorites[0].favoriteDetails.some(item=> item.tweet_id == req.params.id)){
+    if(tweet.favorites[0].favoriteDetails.some(item=> item.user_id == req.decodedJWT.user_id)){
         next({
             status:400,
             message:"Tweet zaten favori listende bulunuyor"
@@ -157,8 +157,8 @@ const favoriteAddRestriction=async(req,res,next)=>{
 
 const favoriteRemoveRestriction=async(req,res,next)=>{
     try {
-    const tweet=await Tweet.getById(req.params.id)
-    if(tweet.favorites[0].favoriteDetails.length===0){
+        const tweet=await Tweet.getById(req.params.id)
+        if(tweet.favorites[0].favoriteDetails.every(item=> item.user_id !== req.decodedJWT.user_id)){
         next({
             status:400,
             message:"Favori listen boş"

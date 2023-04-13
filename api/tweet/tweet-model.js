@@ -125,7 +125,7 @@ const postLike = (likeids) => {
 };
 
 const deleteLike = (likeids) => {
-  return db("likes").delete(likeids);
+  return db("likes").where(likeids).delete();
 };
 
 const getRetweetsByUserId = async (user_id) => {
@@ -170,7 +170,7 @@ const postRetweet = async (retweetIds) => {
 };
 
 const deleteRetweet = (retweetids) => {
-  return db("retweets").delete(retweetids);
+  return db("retweets").where(retweetids).delete();
 };
 
 const getFavorites = async (user_id) => {
@@ -214,7 +214,7 @@ const postFavorite = (favoriteIds) => {
 };
 
 const deleteFavorite = (favoriteIds) => {
-  return db("favorites").delete(favoriteIds);
+  return db("favorites").where(favoriteIds).delete();
 };
 
 module.exports = {
