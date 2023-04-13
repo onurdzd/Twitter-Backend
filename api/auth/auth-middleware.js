@@ -82,7 +82,7 @@ const loginUsernameMailIsValid = async (req, res, next) => {
     }else {
       next();
     }
-  } catch (error) {}
+  } catch (error) {next(error)}
 };
 
 const resetPasswordPayloadCheck =(req,res,next)=>{
@@ -132,7 +132,7 @@ const idIsValid=(req,res,next)=>{
       })
     }
   } catch (error) {
-    
+    next(error)
   }
 }
 
