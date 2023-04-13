@@ -121,9 +121,15 @@ const isValidToken=(req,res,next)=>{
   }
 }
 
-const idIsValid=(req,res,next)=>{
+const idIsValid=async(req,res,next)=>{
   try {
-    if(req.decodedJWT.user_id == req.params.id){
+    const user=await Users.getById(req.params.id)
+    if(user.length===0){
+      next({
+        status:401,
+        message:`${req.params.id} nolu kullanıcı bulunmuyor`
+      })
+    }else if(req.decodedJWT.user_id == req.params.id){
       next()
     }else{
       next({

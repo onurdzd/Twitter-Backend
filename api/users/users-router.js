@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Users = require("./users-model");
 const mwauth = require("../auth/auth-middleware");
-const mwuser=require("./users-middleware")
+const mwuser = require("./users-middleware");
 
 router.get("/", mwauth.adminYetkisi(1), async (req, res, next) => {
   try {
@@ -12,90 +12,116 @@ router.get("/", mwauth.adminYetkisi(1), async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", mwuser.idIsValid, async (req, res, next) => {
   try {
-    const user = await Users.getById(req.params.id);
-    if (user.user_id) {
-      res.status(201).json(user);
-    } else {
-      next({
-        status: 404,
-        message: `${req.params.id} id nolu kullanıcı bulunmuyor`,
-      });
+    res.status(201).json(req.user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete(
+  "/:id",
+  mwuser.idIsValid,
+  mwauth.adminYetkisi(1),
+  async (req, res, next) => {
+    try {
+      const deletedUser = await Users.getBy({ user_id: req.params.id });
+      await Users.remove(req.params.id);
+      res.status(201).json({ message: `${deletedUser[0].username} silindi` });
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-router.delete("/:id", mwauth.adminYetkisi(1), async (req, res, next) => {
-  try {
-    const deletedUser = await Users.getBy({ user_id: req.params.id });
-    await Users.remove(req.params.id);
-    res.status(201).json({ message: `${deletedUser[0].username} silindi` });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/:id/followings",mwauth.isValidToken, async (req, res, next) => {
-  try {
-    const followings = await Users.getFollowingsByUser(req.params.id);
-    const user = await Users.getById(req.params.id);
-    if (user.length === 0) {
-      next({
-        status: 404,
-        message: `${req.params.id} id nolu kullanıcı bulunmuyor`,
-      });
-    } else if (followings && followings.length === 0) {
-      res.status(201).json({ message: "Henüz takip ettiğin hesap bulunmuyor" });
-    } else {
-      res.status(201).json(followings);
+router.get(
+  "/:id/followings",
+  mwuser.idIsValid,
+  mwauth.isValidToken,
+  async (req, res, next) => {
+    try {
+      const followings = await Users.getFollowingsByUser(req.params.id);
+      if (followings && followings.length === 0) {
+        res
+          .status(201)
+          .json({ message: "Henüz takip ettiğin hesap bulunmuyor" });
+      } else {
+        res.status(201).json(followings);
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-router.get("/:id/followers",mwauth.isValidToken, async (req, res, next) => {
-  try {
-    const followers = await Users.getFollowersByUser(req.params.id);
-    const user = await Users.getById(req.params.id);
-    if (user.length === 0) {
-      next({
-        status: 404,
-        message: `${req.params.id} id nolu kullanıcı bulunmuyor`,
-      });
-    } else if (followers && followers.length === 0) {
-      res.status(201).json({ message: "Henüz takipçisi bulunmuyor" });
-    } else {
-      res.status(201).json(followers);
+router.get(
+  "/:id/followers",
+  mwuser.idIsValid,
+  mwauth.isValidToken,
+  async (req, res, next) => {
+    try {
+      const followers = await Users.getFollowersByUser(req.params.id);
+      if (followers && followers.length === 0) {
+        res.status(201).json({ message: "Henüz takipçisi bulunmuyor" });
+      } else {
+        res.status(201).json(followers);
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-router.post("/:id/follow",mwauth.isValidToken,mwuser.followRestriction,async(req,res,next)=>{
-try {
-  const user=await Users.getById(req.decodedJWT.user_id)
-  await Users.addFollowing({user_id:user.user_id,following_user_id:req.params.id})
-  await Users.addFollower({user_id:req.params.id,follower_user_id:user.user_id})
-  res.status(200).json({message:`${req.params.id} nolu kullanıcıyı takip etmeye başladın!`})
-} catch (error) {
-  next(error)
-}
-})
-
-router.delete("/:id/follow",mwauth.isValidToken,mwuser.unfollowRestriction,async(req,res,next)=>{
-  try {
-    await Users.removeFollowers({user_id:req.params.id,follower_user_id:req.decodedJWT.user_id})
-    await Users.removeFollowing({user_id:req.decodedJWT.user_id,following_user_id:req.params.id})
-    res.status(200).json({message:`${req.params.id} nolu hesabı takipten çıktın!`})
-  } catch (error) {
-    next(error)
+router.post(
+  "/:id/follow",
+  mwuser.idIsValid,
+  mwauth.isValidToken,
+  mwuser.followRestriction,
+  async (req, res, next) => {
+    try {
+      const user = await Users.getById(req.decodedJWT.user_id);
+      await Users.addFollowing({
+        user_id: user.user_id,
+        following_user_id: req.params.id,
+      });
+      await Users.addFollower({
+        user_id: req.params.id,
+        follower_user_id: user.user_id,
+      });
+      res
+        .status(200)
+        .json({
+          message: `${req.params.id} nolu kullanıcıyı takip etmeye başladın!`,
+        });
+    } catch (error) {
+      next(error);
+    }
   }
-}
-)
+);
+
+router.delete(
+  "/:id/follow",
+  mwuser.idIsValid,
+  mwauth.isValidToken,
+  mwuser.unfollowRestriction,
+  async (req, res, next) => {
+    try {
+      await Users.removeFollowers({
+        user_id: req.params.id,
+        follower_user_id: req.decodedJWT.user_id,
+      });
+      await Users.removeFollowing({
+        user_id: req.decodedJWT.user_id,
+        following_user_id: req.params.id,
+      });
+      res
+        .status(200)
+        .json({ message: `${req.params.id} nolu hesabı takipten çıktın!` });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;
