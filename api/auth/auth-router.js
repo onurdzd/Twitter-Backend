@@ -26,12 +26,6 @@ router.post("/login",mw.loginUsernameMailIsValid,mw.loginPostDataIsValid,async (
                 account_type_name:user[0].account_type_name,
                 role_id:user[0].role_id,
                 role_name:user[0].role_name,
-                tweets:user[0].tweets,
-                comments:user[0].comments,
-                retweets:user[0].retweets,
-                likes:user[0].likes,
-                followers:user[0].followers,
-                following:user[0].following
             },
             process.env.SECRET,
             { expiresIn: "3d" })
